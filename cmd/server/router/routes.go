@@ -57,7 +57,6 @@ func (r *router) buildOdontologoRoutes() {
 		grupoOdontologo.PUT("/:id", middleware.Authenticate(), controlador.HandlerUpdate())
 		grupoOdontologo.DELETE("/:id", middleware.Authenticate(), controlador.HandlerDelete())
 		grupoOdontologo.PATCH("/:id", middleware.Authenticate(), controlador.HandlerPatch())
-
 	}
 
 }
