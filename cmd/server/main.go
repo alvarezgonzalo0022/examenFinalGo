@@ -88,8 +88,8 @@ func runApp(db *sql.DB, engine *gin.Engine) {
 // connectDB connects to the database.
 func connectDB() *sql.DB {
 	var dbUsername, dbPassword, dbHost, dbPort, dbName string
-	dbUsername = "root"
-	dbPassword = ""
+	dbUsername = os.Getenv("DB_USERNAME")
+	dbPassword = os.Getenv("DB_PASSWORD")
 	dbHost = "localhost"
 	dbPort = "3306"
 	dbName = "my_db"

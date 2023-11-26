@@ -4,8 +4,8 @@ import (
 	"database/sql"
 
 	"github.com/alvarezgonzalo0022/examenFinalGo/cmd/server/handler/ping"
-	handlerProducto "github.com/alvarezgonzalo0022/examenFinalGo/cmd/server/handler/products"
-	producto "github.com/alvarezgonzalo0022/examenFinalGo/internal/products"
+	handlerProducto "github.com/alvarezgonzalo0022/examenFinalGo/cmd/server/handler/odontologos"
+	producto "github.com/alvarezgonzalo0022/examenFinalGo/internal/odontologos"
 	"github.com/alvarezgonzalo0022/examenFinalGo/pkg/middleware"
 	"github.com/gin-gonic/gin"
 )
@@ -33,7 +33,7 @@ func NewRouter(engine *gin.Engine, db *sql.DB) Router {
 // MapRoutes maps all routes.
 func (r *router) MapRoutes() {
 	r.setGroup()
-	r.buildProductRoutes()
+	r.buildOdontologoRoutes()
 	r.buildPingRoutes()
 }
 
@@ -42,21 +42,21 @@ func (r *router) setGroup() {
 	r.routerGroup = r.engine.Group("/api/v1")
 }
 
-// buildProductRoutes maps all routes for the product domain.
-func (r *router) buildProductRoutes() {
+// buildOdontologoRoutes maps all routes for the odontologos domain.
+func (r *router) buildOdontologoRoutes() {
 	// Create a new product controller.
 	repository := producto.NewMySqlRepository(r.db)
-	service := producto.NewServiceProduct(repository)
+	service := producto.NewServiceOdontologo(repository)
 	controlador := handlerProducto.NewControladorProducto(service)
 
-	grupoProducto := r.routerGroup.Group("/producto")
+	grupoOdontologo := r.routerGroup.Group("/odontologos")
 	{
-		grupoProducto.POST("", middleware.Authenticate(), controlador.HandlerCreate())
-		grupoProducto.GET("", middleware.Authenticate(), controlador.HandlerGetAll())
-		grupoProducto.GET("/:id", controlador.HandlerGetByID())
-		grupoProducto.PUT("/:id", middleware.Authenticate(), controlador.HandlerUpdate())
-		grupoProducto.DELETE("/:id", middleware.Authenticate(), controlador.HandlerDelete())
-		grupoProducto.PATCH("/:id", middleware.Authenticate(), controlador.HandlerPatch())
+		grupoOdontologo.POST("", middleware.Authenticate(), controlador.HandlerCreate())
+		grupoOdontologo.GET("", middleware.Authenticate(), controlador.HandlerGetAll())
+		grupoOdontologo.GET("/:id", controlador.HandlerGetByID())
+		grupoOdontologo.PUT("/:id", middleware.Authenticate(), controlador.HandlerUpdate())
+		grupoOdontologo.DELETE("/:id", middleware.Authenticate(), controlador.HandlerDelete())
+		grupoOdontologo.PATCH("/:id", middleware.Authenticate(), controlador.HandlerPatch())
 
 	}
 
