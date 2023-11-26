@@ -5,7 +5,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/aldogayaladh/go-web-1598/internal/domain"
+	"github.com/alvarezgonzalo0022/examenFinalGo/internal/domain"
 )
 
 type Service interface {

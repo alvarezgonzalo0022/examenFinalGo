@@ -5,16 +5,13 @@ import (
 	"fmt"
 	"log"
 	"os"
-
-	routes "github.com/aldogayaladh/go-web-1598/cmd/server/router"
-	"github.com/aldogayaladh/go-web-1598/pkg/middleware"
+	routes "github.com/alvarezgonzalo0022/examenFinalGo/cmd/server/router"
+	"github.com/alvarezgonzalo0022/examenFinalGo/pkg/middleware"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-
-	_ "github.com/aldogayaladh/go-web-1598/docs"
+	_ "github.com/alvarezgonzalo0022/examenFinalGo/docs"
 	_ "github.com/go-sql-driver/mysql"
 )
 

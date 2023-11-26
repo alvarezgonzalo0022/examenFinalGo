@@ -2,10 +2,11 @@ package routes
 
 import (
 	"database/sql"
-	"github.com/aldogayaladh/go-web-1598/pkg/middleware"
-	"github.com/aldogayaladh/go-web-1598/cmd/server/handler/ping"
-	handlerProducto "github.com/aldogayaladh/go-web-1598/cmd/server/handler/products"
-	producto "github.com/aldogayaladh/go-web-1598/internal/products"
+
+	"github.com/alvarezgonzalo0022/examenFinalGo/cmd/server/handler/ping"
+	handlerProducto "github.com/alvarezgonzalo0022/examenFinalGo/cmd/server/handler/products"
+	producto "github.com/alvarezgonzalo0022/examenFinalGo/internal/products"
+	"github.com/alvarezgonzalo0022/examenFinalGo/pkg/middleware"
 	"github.com/gin-gonic/gin"
 )
 

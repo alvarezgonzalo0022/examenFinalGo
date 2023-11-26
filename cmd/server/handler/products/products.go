@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/aldogayaladh/go-web-1598/internal/domain"
-	"github.com/aldogayaladh/go-web-1598/internal/products"
-	"github.com/aldogayaladh/go-web-1598/pkg/web"
+	"github.com/alvarezgonzalo0022/examenFinalGo/internal/domain"
+	"github.com/alvarezgonzalo0022/examenFinalGo/internal/products"
+	"github.com/alvarezgonzalo0022/examenFinalGo/pkg/web"
 	"github.com/gin-gonic/gin"
 )
 
