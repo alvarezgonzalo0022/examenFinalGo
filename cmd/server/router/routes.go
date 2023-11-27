@@ -46,7 +46,7 @@ func (r *router) setGroup() {
 
 // buildOdontologoRoutes maps all routes for the odontologos domain.
 func (r *router) buildOdontologoRoutes() {
-	// Create a new product controller.
+	// Create a new odontologos controller.
 	repository := odontologo.NewMySqlRepository(r.db)
 	service := odontologo.NewServiceOdontologo(repository)
 	controlador := handlerOdontologo.NewControladorOdontologo(service)
@@ -65,7 +65,7 @@ func (r *router) buildOdontologoRoutes() {
 
 // buildPacienteRoutes maps all routes for the pacientes domain.
 func (r *router) buildPacienteRoutes() {
-	// Create a new product controller.
+	// Create a new pacientes controller.
 	repository := paciente.NewPacientesMySqlRepository(r.db)
 	service := paciente.NewServicePacientes(repository)
 	controlador := handlerPaciente.NewControladorPaciente(service)

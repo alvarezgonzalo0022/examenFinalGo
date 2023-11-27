@@ -41,14 +41,14 @@ func (c *Controlador) HandlerCreate() gin.HandlerFunc {
 			return
 		}
 
-		product, err := c.service.Create(ctx, request)
+		paciente, err := c.service.Create(ctx, request)
 		if err != nil {
 			web.Error(ctx, http.StatusInternalServerError, "%s", "internal server error")
 			return
 		}
 
 		web.Success(ctx, http.StatusOK, gin.H{
-			"data": product,
+			"data": paciente,
 		})
 
 	}
@@ -65,7 +65,7 @@ func (c *Controlador) HandlerCreate() gin.HandlerFunc {
 // @Router /pacientes [get]
 func (c *Controlador) HandlerGetAll() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		productos, err := c.service.GetAll(ctx)
+		pacientes, err := c.service.GetAll(ctx)
 
 		if err != nil {
 			web.Error(ctx, http.StatusInternalServerError, "%s", "internal server error")
@@ -73,7 +73,7 @@ func (c *Controlador) HandlerGetAll() gin.HandlerFunc {
 		}
 
 		web.Success(ctx, http.StatusOK, gin.H{
-			"data": productos,
+			"data": pacientes,
 		})
 	}
 }
@@ -97,14 +97,14 @@ func (c *Controlador) HandlerGetByID() gin.HandlerFunc {
 			return
 		}
 
-		product, err := c.service.GetByID(ctx, id)
+		paciente, err := c.service.GetByID(ctx, id)
 		if err != nil {
 			web.Error(ctx, http.StatusInternalServerError, "%s", "internal server error")
 			return
 		}
 
 		web.Success(ctx, http.StatusOK, gin.H{
-			"data": product,
+			"data": paciente,
 		})
 	}
 }
@@ -140,14 +140,14 @@ func (c *Controlador) HandlerUpdate() gin.HandlerFunc {
 			return
 		}
 
-		product, err := c.service.Update(ctx, request, idInt)
+		paciente, err := c.service.Update(ctx, request, idInt)
 		if err != nil {
 			web.Error(ctx, http.StatusInternalServerError, "%s", "internal server error")
 			return
 		}
 
 		web.Success(ctx, http.StatusOK, gin.H{
-			"data": product,
+			"data": paciente,
 		})
 
 	}
@@ -179,7 +179,7 @@ func (c *Controlador) HandlerDelete() gin.HandlerFunc {
 		}
 
 		web.Success(ctx, http.StatusOK, gin.H{
-			"mensaje": "producto eliminado",
+			"mensaje": "paciente eliminado",
 		})
 	}
 }
@@ -212,14 +212,14 @@ func (c *Controlador) HandlerPatch() gin.HandlerFunc {
 			return
 		}
 
-		product, err := c.service.Patch(ctx, request, id)
+		paciente, err := c.service.Patch(ctx, request, id)
 		if err != nil {
 			web.Error(ctx, http.StatusInternalServerError, "%s", "internal server error")
 			return
 		}
 
 		web.Success(ctx, http.StatusOK, gin.H{
-			"data": product,
+			"data": paciente,
 		})
 	}
 }
