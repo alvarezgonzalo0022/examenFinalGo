@@ -13,6 +13,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var (
+	ErrPrepareStatement = errors.New("error prepare statement")
+	ErrExecStatement    = errors.New("error exec statement")
+	ErrLastInsertedId   = errors.New("error last inserted id")
+	ErrEmpty    = errors.New("empty list")
+	ErrNotFound = errors.New("paciente not found")
+)
+
+
 type repositoryturnomysql struct {
 	db *sql.DB;
 }
