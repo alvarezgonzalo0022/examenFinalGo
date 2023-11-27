@@ -13,7 +13,7 @@ type Controlador struct {
 	service odontologos.ServiceOdontologos
 }
 
-func NewControladorProducto(service odontologos.ServiceOdontologos) *Controlador {
+func NewControladorOdontologo(service odontologos.ServiceOdontologos) *Controlador {
 	return &Controlador{
 		service: service,
 	}
