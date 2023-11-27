@@ -34,11 +34,11 @@ func (r *repositorypacientesmysql) Create(ctx context.Context, paciente domain.P
 	defer statement.Close()
 
 	result, err := statement.Exec(
-		paciente.Name,
+		paciente.FirstName,
 		paciente.LastName,
 		paciente.Address,
-		paciente.DNI,
-		paciente.IngressDate,
+		paciente.Document,
+		paciente.AdmissionDate,
 	)
 
 	if err != nil {
@@ -71,11 +71,11 @@ func (r *repositorypacientesmysql) GetAll(ctx context.Context) ([]domain.Pacient
 		var paciente domain.Paciente
 		err := rows.Scan(
 			&paciente.Id,
-			&paciente.Name,
+			&paciente.FirstName,
 			&paciente.LastName,
 			&paciente.Address,
-			&paciente.DNI,
-			&paciente.IngressDate,
+			&paciente.Document,
+			&paciente.AdmissionDate,
 		)
 		if err != nil {
 			return []domain.Paciente{}, err
@@ -99,11 +99,11 @@ func (r *repositorypacientesmysql) GetByID(ctx context.Context, id int) (domain.
 
 	err := row.Scan(
 		&paciente.Id,
-		&paciente.Name,
+		&paciente.FirstName,
 		&paciente.LastName,
 		&paciente.Address,
-		&paciente.DNI,
-		&paciente.IngressDate,
+		&paciente.Document,
+		&paciente.AdmissionDate,
 	)
 
 	if err != nil {
@@ -126,11 +126,11 @@ func (r *repositorypacientesmysql) Update(
 	defer statement.Close()
 
 	result, err := statement.Exec(
-		paciente.Name,
+		paciente.FirstName,
 		paciente.LastName,
 		paciente.Address,
-		paciente.DNI,
-		paciente.IngressDate,
+		paciente.Document,
+		paciente.AdmissionDate,
 	)
 
 	if err != nil {
@@ -180,11 +180,11 @@ func (r *repositorypacientesmysql) Patch(
 	defer statement.Close()
 
 	result, err := statement.Exec(
-		paciente.Name,
+		paciente.FirstName,
 		paciente.LastName,
 		paciente.Address,
-		paciente.DNI,
-		paciente.IngressDate,
+		paciente.Document,
+		paciente.AdmissionDate,
 	)
 
 	if err != nil {

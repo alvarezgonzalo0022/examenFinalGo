@@ -1,13 +1,9 @@
 package pacientes
 
 var (
-	QueryInsertPaciente = `INSERT INTO pacientes(name, last_name, address, dni, ingress_date)
-	VALUES(?,?,?,?,?)`
-	QueryGetAllPacientes = `SELECT id, name, last_name, address, dni, ingress_date 
-	FROM pacientes`
-	QueryDeletePaciente  = `DELETE FROM pacientes WHERE id = ?`
-	QueryGetPacienteById = `SELECT id, name, last_name, address, dni, ingress_date
-	FROM pacientes WHERE id = ?`
-	QueryUpdatePaciente = `UPDATE pacientes SET name = ?, last_name = ?, address = ?, dni = ?, ingress_date = ?
-	WHERE id = ?`
+	QueryInsertPaciente = `INSERT INTO patients (first_name, last_name, address, document, admission_date) VALUES(?,?,?,?,?)`
+	QueryGetAllPacientes = `SELECT id, first_name, last_name, address, document, admission_date FROM patients`
+	QueryDeletePaciente  = `DELETE FROM _time WHERE id = ?`
+	QueryGetPacienteById = `SELECT id, first_name, last_name, address, document, admission_date FROM _time WHERE id = ?`
+	QueryUpdatePaciente = `UPDATE patients SET first_name = ?, last_name = ?, address = ?, document = ?, admission_date = ? WHERE id = ?`
 )

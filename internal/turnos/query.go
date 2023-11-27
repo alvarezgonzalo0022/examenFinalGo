@@ -1,10 +1,10 @@
 package turnos
 
 var (
-	QueryInsertTurno           = `INSERT INTO turno (id_paciente, id_odontologo, description, fecha, hora) VALUES (?,?,?,?,?)`
-	QueryGetAllTurno           = `SELECT id, id_paciente, id_odontologo, description, fecha, hora FROM turno`
-	QueryGetAllTurnoByPaciente = `SELECT id, id_paciente, id_odontologo, description, fecha, hora FROM turno WHERE id_paciente = ?`
-	QueryGetByIdTurno          = `SELECT id, id_paciente, id_odontologo, description, fecha, hora FROM turno WHERE id = ?`
-	QueryUpdateTurno           = `UPDATE turno SET id_paciente = ?, id_odontologo = ?, description = ?, fecha = ?, hora = ? WHERE id = ?`
-	QueryDeleteTurno           = `DELETE FROM turno WHERE id = ?`
+	QueryInsertTurno           = `INSERT INTO appointments (id_patient, id_dentist, description, appointment_date, appointment_time) VALUES (?,?,?,?,?)`
+	QueryGetAllTurno           = `SELECT id, id_patient, id_dentist, description, appointment_date, appointment_time FROM appointments`
+	QueryGetAllTurnoByPaciente = `SELECT id, id_patient, id_dentist, description, appointment_date, appointment_time FROM appointments WHERE id_patient = ?`
+	QueryGetByIdTurno          = `SELECT id, id_patient, id_dentist, description, appointment_date, appointment_time FROM appointments WHERE id = ?`
+	QueryUpdateTurno           = `UPDATE appointments SET id_patient = ?, id_dentist = ?, description = ?, appointment_date = ?, appointment_time = ? WHERE id = ?`
+	QueryDeleteTurno           = `DELETE FROM appointments WHERE id = ?`
 )

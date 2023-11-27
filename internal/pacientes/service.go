@@ -104,24 +104,24 @@ func (s *service) Patch(ctx context.Context, paciente domain.Paciente, id int) (
 // validatePatch is a method that validates the fields to be updated.
 func (s *service) validatePatch(pacienteStore, paciente domain.Paciente) (domain.Paciente, error) {
 
-	if paciente.Name != "" {
-		pacienteStore.Name = paciente.Name
+	if paciente.FirstName != "" {
+		pacienteStore.FirstName = paciente.FirstName
 	}
 
 	if paciente.LastName != "" {
-		pacienteStore.Name = paciente.LastName
+		pacienteStore.LastName = paciente.LastName
 	}
 
 	if paciente.Address != "" {
 		pacienteStore.Address = paciente.Address
 	}
 
-	if paciente.DNI != "" {
-		pacienteStore.DNI = paciente.DNI
+	if paciente.Document != "" {
+		pacienteStore.Document = paciente.Document
 	}
 
-	if !paciente.IngressDate.IsZero() {
-		pacienteStore.IngressDate = paciente.IngressDate
+	if !paciente.AdmissionDate.IsZero() {
+		pacienteStore.AdmissionDate = paciente.AdmissionDate
 	}
 
 	return pacienteStore, nil

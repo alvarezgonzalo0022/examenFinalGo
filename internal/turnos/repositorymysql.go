@@ -39,8 +39,8 @@ func (r *repositoryturnomysql) Create(ctx *gin.Context, turno domain.Turno) (dom
 	defer statement.Close()
 
 	result, err := statement.Exec(
-		turno.IdOdontologo,
-		turno.IdPaciente,
+		turno.IdDentist,
+		turno.IdPatient,
 		turno.Date,
 		turno.Time,
 	)
@@ -74,8 +74,8 @@ func (r *repositoryturnomysql) GetAll(ctx *gin.Context) ([]domain.Turno, error) 
 
 		err := rows.Scan(
 			&turno.Id,
-			&turno.IdOdontologo,
-			&turno.IdPaciente,
+			&turno.IdDentist,
+			&turno.IdPatient,
 			&turno.Date,
 			&turno.Time,
 		)
@@ -107,46 +107,70 @@ func (r *repositoryturnomysql) GetById(ctx *gin.Context, id int) (domain.Turno, 
 
 	err = row.Scan(
 		&turno.Id,
-		&turno.IdOdontologo,
-		&turno.IdPaciente,
-		&turno.Date,
-		&turno.Time,
+		&turno.IdDentist,
+		&turno.IdPatient,
+		&turno.AppointmentDate,
+		&turno.AppointmentTime,
+		&turno.Description,
 	)
 
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return domain.Turno{}, ErrTurnoNotFound
+			return domain.Turno{}, domain.ErrAppointmentNotFound
 		}
-		return domain.Turno{}, ErrScanRow
+		return domain.Turno{}, domain.ErrScanRow
 	}
 
 	return turno, nil
 }
-	if err != nil {
-		return domain.Turno{}, ErrPrepareStatement
-	}
 
-	defer statement.Close()
 
-	row := statement.QueryRow(id)
 
-	var turno domain.Turno
+func (r *repositoryturnomysql) Update(ctx context.Context, turno domain.Turno, id int) (domain.Turno, error) {
+    statement, err := r.db.Prepare(QueryUpdateTurno)
+    if err != nil {
+        return domain.Turno{}, err
+    }
 
-	err = row.Scan(
-		&turno.Id,
-		&turno.IdOdontologo,
-		&turno.IdPaciente,
-		&turno.Date,
-		&turno.Time,
-	)
+    defer statement.Close()
 
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return domain.Turno{}, ErrTurnoNotFound
-		}
-		return domain.Turno{}, ErrScanRow
-	}
+    result, err := statement.Exec(
+		&turno.IdDentist,
+		&turno.IdPatient,
+		&turno.AppointmentDate,
+		&turno.AppointmentTime,
+		&turno.Description,
+    )
 
-	return turno, nil
+    if err != nil {
+        return domain.Turno{}, err
+    }
+
+    _, err = result.RowsAffected()
+    if err != nil {
+        return domain.Turno{}, err
+    }
+
+    turno.Id = id
+
+    return turno, nil
 }
-	
+
+
+func (r *repositoryturnomysql) Delete(ctx context.Context, id int) error {
+    result, err := r.db.Exec(QueryDeleteTurno, id)
+    if err != nil {
+        return err
+    }
+
+    rowsAffected, err := result.RowsAffected()
+    if err != nil {
+        return err
+    }
+
+    if rowsAffected < 1 {
+        return ErrNotFound
+    }
+
+    return nil
+}

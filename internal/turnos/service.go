@@ -89,24 +89,28 @@ func (s *service) Patch(ctx context.Context, turno domain.Turno, id int) (domain
 }
 
 func (s *service) validatePatch(turnoStore domain.Turno, turno domain.Turno) (domain.Turno, error) {
-	if turnoStore.ID != turno.ID {
+	if turnoStore.Id != turno.Id {
 		return domain.Turno{}, domain.ErrInvalidID
 	}
 
-	if turnoStore.FechaHora != turno.FechaHora {
-		turnoStore.FechaHora = turno.FechaHora
+	if turnoStore.AppointmentDate != turno.AppointmentDate {
+		turnoStore.AppointmentDate = turno.AppointmentDate
+	}
+	
+	if turnoStore.AppointmentTime != turno.AppointmentTime {
+		turnoStore.AppointmentTime = turno.AppointmentTime
 	}
 
-	if turnoStore.IDPaciente != turno.IDPaciente {
-		turnoStore.IDPaciente = turno.IDPaciente
+	if turnoStore.IdPatient != turno.IdPatient {
+		turnoStore.IdPatient = turno.IdPatient
 	}
 
-	if turnoStore.IDOdontologo != turno.IDOdontologo {
-		turnoStore.IDOdontologo = turno.IDOdontologo
+	if turnoStore.IdDentist != turno.IdDentist {
+		turnoStore.IdDentist = turno.IdDentist
 	}
 
-	if turnoStore.Observaciones != turno.Observaciones {
-		turnoStore.Observaciones = turno.Observaciones
+	if turnoStore.Description != turno.Description {
+		turnoStore.Description = turno.Description
 	}
 
 	return turnoStore, nil

@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strconv"
 	"github.com/alvarezgonzalo0022/examenFinalGo/internal/domain"
-	 odontologos "github.com/alvarezgonzalo0022/examenFinalGo/internal/odontologos"
+	 odontologos "github.com/alvarezgonzalo0022/examenFinalGo/internal/dentists"
 	"github.com/alvarezgonzalo0022/examenFinalGo/pkg/web"
 	"github.com/gin-gonic/gin"
 )
@@ -32,7 +32,7 @@ func NewControladorOdontologo(service odontologos.ServiceOdontologos) *Controlad
 func (c *Controlador) HandlerCreate() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 
-		var request domain.Odontologo
+		var request domain.Dentist
 
 		err := ctx.Bind(&request)
 
@@ -203,7 +203,7 @@ func (c *Controlador) HandlerPatch() gin.HandlerFunc {
 			return
 		}
 
-		var request domain.Odontologo
+		var request domain.Dentist
 
 		errBind := ctx.Bind(&request)
 
