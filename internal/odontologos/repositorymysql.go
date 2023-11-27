@@ -1,4 +1,4 @@
-package products
+package odontologos
 
 import (
 	"context"
@@ -12,20 +12,20 @@ var (
 	ErrExecStatement    = errors.New("error exec statement")
 	ErrLastInsertedId   = errors.New("error last inserted id")
 	ErrEmpty    = errors.New("empty list")
-	ErrNotFound = errors.New("product not found")
+	ErrNotFound = errors.New("odontologo not found")
 )
 
-type repositorymysql struct {
+type repositoryodontologosmysql struct {
 	db *sql.DB
 }
 
 // NewMemoryRepository ....
-func NewMySqlRepository(db *sql.DB) Repository {
-	return &repositorymysql{db: db}
+func NewMySqlRepository(db *sql.DB) RepositoryOdontologos {
+	return &repositoryodontologosmysql{db: db}
 }
 
 // Create is a method that creates a new odontologo.
-func (r *repositorymysql) Create(ctx context.Context, odontologo domain.Odontologo) (domain.Odontologo, error) {
+func (r *repositoryodontologosmysql) Create(ctx context.Context, odontologo domain.Odontologo) (domain.Odontologo, error) {
 	statement, err := r.db.Prepare(QueryInsertOdontologo)
 	if err != nil {
 		return domain.Odontologo{}, ErrPrepareStatement
@@ -55,7 +55,7 @@ func (r *repositorymysql) Create(ctx context.Context, odontologo domain.Odontolo
 }
 
 // GetAll is a method that returns all odontologos.
-func (r *repositorymysql) GetAll(ctx context.Context) ([]domain.Odontologo, error) {
+func (r *repositoryodontologosmysql) GetAll(ctx context.Context) ([]domain.Odontologo, error) {
 	rows, err := r.db.Query(QueryGetAllOdontologos)
 	if err != nil {
 		return []domain.Odontologo{}, err
@@ -88,7 +88,7 @@ func (r *repositorymysql) GetAll(ctx context.Context) ([]domain.Odontologo, erro
 }
 
 // GetByID is a method that returns a odontologo by ID.
-func (r *repositorymysql) GetByID(ctx context.Context, id int) (domain.Odontologo, error) {
+func (r *repositoryodontologosmysql) GetByID(ctx context.Context, id int) (domain.Odontologo, error) {
 	row := r.db.QueryRow(QueryGetOdontologoById, id)
 
 	var odontologo domain.Odontologo
@@ -107,7 +107,7 @@ func (r *repositorymysql) GetByID(ctx context.Context, id int) (domain.Odontolog
 }
 
 // Update is a method that updates a odontologo by ID.
-func (r *repositorymysql) Update(
+func (r *repositoryodontologosmysql) Update(
 	ctx context.Context,
 	odontologo domain.Odontologo,
 	id int) (domain.Odontologo, error) {
@@ -139,8 +139,8 @@ func (r *repositorymysql) Update(
 
 }
 
-// Delete is a method that deletes a product by ID.
-func (r *repositorymysql) Delete(ctx context.Context, id int) error {
+// Delete is a method that deletes a odontologo by ID.
+func (r *repositoryodontologosmysql) Delete(ctx context.Context, id int) error {
 	result, err := r.db.Exec(QueryDeleteOdontologo, id)
 	if err != nil {
 		return err
@@ -159,7 +159,7 @@ func (r *repositorymysql) Delete(ctx context.Context, id int) error {
 }
 
 // Patch is a method that updates a odontologo by ID.
-func (r *repositorymysql) Patch(
+func (r *repositoryodontologosmysql) Patch(
 	ctx context.Context,
 	odontologo domain.Odontologo,
 	id int) (domain.Odontologo, error) {

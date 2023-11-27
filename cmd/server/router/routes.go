@@ -2,10 +2,9 @@ package routes
 
 import (
 	"database/sql"
-
 	"github.com/alvarezgonzalo0022/examenFinalGo/cmd/server/handler/ping"
-	handlerProducto "github.com/alvarezgonzalo0022/examenFinalGo/cmd/server/handler/odontologos"
-	producto "github.com/alvarezgonzalo0022/examenFinalGo/internal/odontologos"
+	handlerOdontologo "github.com/alvarezgonzalo0022/examenFinalGo/cmd/server/handler/odontologos"
+	odontologo "github.com/alvarezgonzalo0022/examenFinalGo/internal/odontologos"
 	"github.com/alvarezgonzalo0022/examenFinalGo/pkg/middleware"
 	"github.com/gin-gonic/gin"
 )
@@ -45,9 +44,9 @@ func (r *router) setGroup() {
 // buildOdontologoRoutes maps all routes for the odontologos domain.
 func (r *router) buildOdontologoRoutes() {
 	// Create a new product controller.
-	repository := producto.NewMySqlRepository(r.db)
-	service := producto.NewServiceOdontologo(repository)
-	controlador := handlerProducto.NewControladorProducto(service)
+	repository := odontologo.NewMySqlRepository(r.db)
+	service := odontologo.NewServiceOdontologo(repository)
+	controlador := handlerOdontologo.NewControladorProducto(service)
 
 	grupoOdontologo := r.routerGroup.Group("/odontologos")
 	{

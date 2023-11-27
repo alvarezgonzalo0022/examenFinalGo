@@ -1,11 +1,11 @@
-package products
+package odontologos
 
 import (
 	"context"
 	"github.com/alvarezgonzalo0022/examenFinalGo/internal/domain"
 )
 
-type Repository interface {
+type RepositoryOdontologos interface {
 	Create(ctx context.Context, odontologo domain.Odontologo) (domain.Odontologo, error)
 	GetAll(ctx context.Context) ([]domain.Odontologo, error)
 	GetByID(ctx context.Context, id int) (domain.Odontologo, error)

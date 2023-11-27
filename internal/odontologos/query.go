@@ -1,8 +1,8 @@
-package products
+package odontologos
 
 var (
 	QueryInsertOdontologo = `INSERT INTO odontologos(name, last_name, code)
-	VALUES(?,?,?,?,?,?)`
+	VALUES(?,?,?)`
 	QueryGetAllOdontologos = `SELECT id, name, last_name, code 
 	FROM odontologos`
 	QueryDeleteOdontologo  = `DELETE FROM odontologos WHERE id = ?`

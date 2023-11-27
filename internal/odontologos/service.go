@@ -1,4 +1,4 @@
-package products
+package odontologos
 
 import (
 	"context"
@@ -6,7 +6,7 @@ import (
 	"github.com/alvarezgonzalo0022/examenFinalGo/internal/domain"
 )
 
-type Service interface {
+type ServiceOdontologos interface {
 	Create(ctx context.Context, odontologo domain.Odontologo) (domain.Odontologo, error)
 	GetAll(ctx context.Context) ([]domain.Odontologo, error)
 	GetByID(ctx context.Context, id int) (domain.Odontologo, error)
@@ -16,10 +16,10 @@ type Service interface {
 }
 
 type service struct {
-	repository Repository
+	repository RepositoryOdontologos
 }
 
-func NewServiceOdontologo(repository Repository) Service {
+func NewServiceOdontologo(repository RepositoryOdontologos) ServiceOdontologos {
 	return &service{repository: repository}
 }
 
@@ -60,7 +60,7 @@ func (s *service) GetByID(ctx context.Context, id int) (domain.Odontologo, error
 func (s *service) Update(ctx context.Context, odontologo domain.Odontologo, id int) (domain.Odontologo, error) {
 	odontologo, err := s.repository.Update(ctx, odontologo, id)
 	if err != nil {
-		log.Println("[OdontologosService][Update] error updating product by ID", err)
+		log.Println("[OdontologosService][Update] error updating odontologo by ID", err)
 		return domain.Odontologo{}, err
 	}
 
@@ -102,18 +102,18 @@ func (s *service) Patch(ctx context.Context, odontologo domain.Odontologo, id in
 }
 
 // validatePatch is a method that validates the fields to be updated.
-func (s *service) validatePatch(odontologoStore, producto domain.Odontologo) (domain.Odontologo, error) {
+func (s *service) validatePatch(odontologoStore, odontologo domain.Odontologo) (domain.Odontologo, error) {
 
-	if producto.Name != "" {
-		odontologoStore.Name = producto.Name
+	if odontologo.Name != "" {
+		odontologoStore.Name = odontologo.Name
 	}
 
-	if producto.LastName != "" {
-		odontologoStore.Name = producto.LastName
+	if odontologo.LastName != "" {
+		odontologoStore.Name = odontologo.LastName
 	}
 
-	if producto.Code != "" {
-		odontologoStore.Code = producto.Code
+	if odontologo.Code != "" {
+		odontologoStore.Code = odontologo.Code
 	}
 
 	return odontologoStore, nil
