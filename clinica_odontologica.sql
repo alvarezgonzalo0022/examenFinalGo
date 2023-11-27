@@ -19,6 +19,9 @@
 -- Table structure for table `odontologos`
 --
 
+CREATE DATABASE IF NOT EXISTS clinica_odontologica
+USE clinica_odontologica
+
 DROP TABLE IF EXISTS `odontologos`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
@@ -107,4 +110,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-11-27 15:59:54
+-- Dump completed on 2023-11-27 16:06:23
