@@ -70,14 +70,14 @@ func (r *router) buildPacienteRoutes() {
 	service := paciente.NewServicePacientes(repository)
 	controlador := handlerPaciente.NewControladorPaciente(service)
 
-	grupoOdontologo := r.routerGroup.Group("/pacientes")
+	grupoPacientes := r.routerGroup.Group("/pacientes")
 	{
-		grupoOdontologo.POST("", middleware.Authenticate(), controlador.HandlerCreate())
-		grupoOdontologo.GET("", middleware.Authenticate(), controlador.HandlerGetAll())
-		grupoOdontologo.GET("/:id", controlador.HandlerGetByID())
-		grupoOdontologo.PUT("/:id", middleware.Authenticate(), controlador.HandlerUpdate())
-		grupoOdontologo.DELETE("/:id", middleware.Authenticate(), controlador.HandlerDelete())
-		grupoOdontologo.PATCH("/:id", middleware.Authenticate(), controlador.HandlerPatch())
+		grupoPacientes.POST("", middleware.Authenticate(), controlador.HandlerCreate())
+		grupoPacientes.GET("", middleware.Authenticate(), controlador.HandlerGetAll())
+		grupoPacientes.GET("/:id", controlador.HandlerGetByID())
+		grupoPacientes.PUT("/:id", middleware.Authenticate(), controlador.HandlerUpdate())
+		grupoPacientes.DELETE("/:id", middleware.Authenticate(), controlador.HandlerDelete())
+		grupoPacientes.PATCH("/:id", middleware.Authenticate(), controlador.HandlerPatch())
 	}
 
 }
