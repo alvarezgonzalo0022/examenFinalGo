@@ -78,7 +78,8 @@ CREATE TABLE `turnos` (
   `id` int NOT NULL AUTO_INCREMENT,
   `paciente_id` int DEFAULT NULL,
   `odontologo_id` int DEFAULT NULL,
-  `fecha_turno` datetime DEFAULT NULL,
+  `fecha_turno` date DEFAULT NULL,
+  `hora_turno` time DEFAULT NULL,
   `descripcion` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `idpacientes_idx` (`paciente_id`),
@@ -106,4 +107,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-11-27 15:52:13
+-- Dump completed on 2023-11-27 15:59:54
