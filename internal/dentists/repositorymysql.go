@@ -4,6 +4,8 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"fmt"
+
 	"github.com/alvarezgonzalo0022/examenFinalGo/internal/domain"
 )
 
@@ -122,15 +124,20 @@ func (r *repositorydentistsmysql) Update(
 		dentist.FirstName,
 		dentist.LastName,
 		dentist.RegistrationId,
+		id,
 	)
 
 	if err != nil {
 		return domain.Dentist{}, err
 	}
 
-	_, err = result.RowsAffected()
+	rowsAffected, err := result.RowsAffected()
 	if err != nil {
 		return domain.Dentist{}, err
+	}
+
+	if rowsAffected == 0 {
+		return domain.Dentist{}, fmt.Errorf("no se encontró ningún dentista con ID %d", id)
 	}
 
 	dentist.Id = id
@@ -174,15 +181,20 @@ func (r *repositorydentistsmysql) Patch(
 		dentist.FirstName,
 		dentist.LastName,
 		dentist.RegistrationId,
+		id,
 	)
 
 	if err != nil {
 		return domain.Dentist{}, err
 	}
 
-	_, err = result.RowsAffected()
+	rowsAffected, err := result.RowsAffected()
 	if err != nil {
 		return domain.Dentist{}, err
+	}
+
+	if rowsAffected == 0 {
+		return domain.Dentist{}, fmt.Errorf("no se encontró ningún dentista con ID %d", id)
 	}
 
 	return dentist, nil
