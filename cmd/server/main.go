@@ -5,14 +5,16 @@ import (
 	"fmt"
 	"log"
 	"os"
+
 	routes "github.com/alvarezgonzalo0022/examenFinalGo/cmd/server/router"
+	// _ "github.com/alvarezgonzalo0022/examenFinalGo/docs"
 	"github.com/alvarezgonzalo0022/examenFinalGo/pkg/middleware"
+	"github.com/alvarezgonzalo0022/examenFinalGo/pkg/store"
 	"github.com/gin-gonic/gin"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	_ "github.com/alvarezgonzalo0022/examenFinalGo/docs"
-	_ "github.com/go-sql-driver/mysql"
 )
 
 const (
@@ -55,7 +57,7 @@ func main() {
 	}
 
 	// Connect to the database.
-	db := connectDB()
+	db := store.ConnectDB()
 
 	// Create a new Gin engine.
 	router := gin.New()
@@ -83,33 +85,4 @@ func runApp(db *sql.DB, engine *gin.Engine) {
 		panic(err)
 	}
 
-}
-
-// connectDB connects to the database.
-func connectDB() *sql.DB {
-	var dbUsername, dbPassword, dbHost, dbPort, dbName string
-	dbUsername = os.Getenv("DB_USERNAME")
-	dbPassword = os.Getenv("DB_PASSWORD")
-	dbHost = os.Getenv("DB_HOST")
-	dbPort = os.Getenv("DB_PORT")
-	dbName = os.Getenv("DB_NAME")
-
-	// Create the data source.
-	dataSource := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", dbUsername, dbPassword, dbHost, dbPort, dbName)
-
-	// Open the connection.
-	db, err := sql.Open("mysql", dataSource)
-
-	if err != nil {
-		panic(err)
-	}
-
-	// Check the connection.
-	err = db.Ping()
-
-	if err != nil {
-		panic(err)
-	}
-
-	return db
 }

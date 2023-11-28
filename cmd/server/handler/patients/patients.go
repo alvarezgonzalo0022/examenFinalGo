@@ -1,20 +1,20 @@
-package pacientes
+package patients
 
 import (
 	"net/http"
 	"strconv"
 	"github.com/alvarezgonzalo0022/examenFinalGo/internal/domain"
-	pacientes "github.com/alvarezgonzalo0022/examenFinalGo/internal/patients"
+	patients "github.com/alvarezgonzalo0022/examenFinalGo/internal/patients"
 	"github.com/alvarezgonzalo0022/examenFinalGo/pkg/web"
 	"github.com/gin-gonic/gin"
 )
 
-type Controlador struct {
-	service pacientes.ServicePatients
+type Controller struct {
+	service patients.ServicePatients
 }
 
-func NewControladorPaciente(service pacientes.ServicePatients) *Controlador {
-	return &Controlador{
+func NewControllerPatient(service patients.ServicePatients) *Controller {
+	return &Controller{
 		service: service,
 	}
 }
@@ -29,7 +29,7 @@ func NewControladorPaciente(service pacientes.ServicePatients) *Controlador {
 // @Failure 400 {object} web.errorResponse
 // @Failure 500 {object} web.errorResponse
 // @Router /pacientes [post]
-func (c *Controlador) HandlerCreate() gin.HandlerFunc {
+func (c *Controller) HandlerCreate() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 
 		var request domain.Patient
@@ -41,14 +41,14 @@ func (c *Controlador) HandlerCreate() gin.HandlerFunc {
 			return
 		}
 
-		paciente, err := c.service.Create(ctx, request)
+		patient, err := c.service.Create(ctx, request)
 		if err != nil {
 			web.Error(ctx, http.StatusInternalServerError, "%s", "internal server error")
 			return
 		}
 
 		web.Success(ctx, http.StatusOK, gin.H{
-			"data": paciente,
+			"data": patient,
 		})
 
 	}
@@ -63,9 +63,9 @@ func (c *Controlador) HandlerCreate() gin.HandlerFunc {
 // @Success 200 {object} web.response
 // @Failure 500 {object} web.errorResponse
 // @Router /pacientes [get]
-func (c *Controlador) HandlerGetAll() gin.HandlerFunc {
+func (c *Controller) HandlerGetAll() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		pacientes, err := c.service.GetAll(ctx)
+		patients, err := c.service.GetAll(ctx)
 
 		if err != nil {
 			web.Error(ctx, http.StatusInternalServerError, "%s", "internal server error")
@@ -73,7 +73,7 @@ func (c *Controlador) HandlerGetAll() gin.HandlerFunc {
 		}
 
 		web.Success(ctx, http.StatusOK, gin.H{
-			"data": pacientes,
+			"data": patients,
 		})
 	}
 }
@@ -89,22 +89,22 @@ func (c *Controlador) HandlerGetAll() gin.HandlerFunc {
 // @Failure 400 {object} web.errorResponse
 // @Failure 500 {object} web.errorResponse
 // @Router /pacientes/:id [get]
-func (c *Controlador) HandlerGetByID() gin.HandlerFunc {
+func (c *Controller) HandlerGetByID() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		id, err := strconv.Atoi(ctx.Param("id"))
 		if err != nil {
-			web.Error(ctx, http.StatusBadRequest, "%s", "id invalido")
+			web.Error(ctx, http.StatusBadRequest, "%s", "invalid id")
 			return
 		}
 
-		paciente, err := c.service.GetByID(ctx, id)
+		patient, err := c.service.GetByID(ctx, id)
 		if err != nil {
 			web.Error(ctx, http.StatusInternalServerError, "%s", "internal server error")
 			return
 		}
 
 		web.Success(ctx, http.StatusOK, gin.H{
-			"data": paciente,
+			"data": patient,
 		})
 	}
 }
@@ -119,7 +119,7 @@ func (c *Controlador) HandlerGetByID() gin.HandlerFunc {
 // @Failure 400 {object} web.errorResponse
 // @Failure 500 {object} web.errorResponse
 // @Router /pacientes/:id [put]
-func (c *Controlador) HandlerUpdate() gin.HandlerFunc {
+func (c *Controller) HandlerUpdate() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 
 		var request domain.Patient
@@ -140,14 +140,14 @@ func (c *Controlador) HandlerUpdate() gin.HandlerFunc {
 			return
 		}
 
-		paciente, err := c.service.Update(ctx, request, idInt)
+		patient, err := c.service.Update(ctx, request, idInt)
 		if err != nil {
 			web.Error(ctx, http.StatusInternalServerError, "%s", "internal server error")
 			return
 		}
 
 		web.Success(ctx, http.StatusOK, gin.H{
-			"data": paciente,
+			"data": patient,
 		})
 
 	}
@@ -164,11 +164,11 @@ func (c *Controlador) HandlerUpdate() gin.HandlerFunc {
 // @Failure 400 {object} web.errorResponse
 // @Failure 500 {object} web.errorResponse
 // @Router /pacientes/:id [delete]
-func (c *Controlador) HandlerDelete() gin.HandlerFunc {
+func (c *Controller) HandlerDelete() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		id, err := strconv.Atoi(ctx.Param("id"))
 		if err != nil {
-			web.Error(ctx, http.StatusBadRequest, "%s", "id invalido")
+			web.Error(ctx, http.StatusBadRequest, "%s", "invalid id")
 			return
 		}
 
@@ -179,7 +179,7 @@ func (c *Controlador) HandlerDelete() gin.HandlerFunc {
 		}
 
 		web.Success(ctx, http.StatusOK, gin.H{
-			"mensaje": "paciente eliminado",
+			"mensaje": "deleted patient",
 		})
 	}
 }
@@ -195,11 +195,11 @@ func (c *Controlador) HandlerDelete() gin.HandlerFunc {
 // @Failure 400 {object} web.errorResponse
 // @Failure 500 {object} web.errorResponse
 // @Router /pacientes/:id [patch]
-func (c *Controlador) HandlerPatch() gin.HandlerFunc {
+func (c *Controller) HandlerPatch() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		id, err := strconv.Atoi(ctx.Param("id"))
 		if err != nil {
-			web.Error(ctx, http.StatusBadRequest, "%s", "id invalido")
+			web.Error(ctx, http.StatusBadRequest, "%s", "invalid id")
 			return
 		}
 
@@ -212,14 +212,14 @@ func (c *Controlador) HandlerPatch() gin.HandlerFunc {
 			return
 		}
 
-		paciente, err := c.service.Patch(ctx, request, id)
+		patient, err := c.service.Patch(ctx, request, id)
 		if err != nil {
 			web.Error(ctx, http.StatusInternalServerError, "%s", "internal server error")
 			return
 		}
 
 		web.Success(ctx, http.StatusOK, gin.H{
-			"data": paciente,
+			"data": patient,
 		})
 	}
 }

@@ -1,0 +1,208 @@
+package appointments
+
+import (
+	"context"
+	"database/sql"
+	"errors"
+	"log"
+	// "time"
+
+	"github.com/alvarezgonzalo0022/examenFinalGo/internal/domain"
+	// "github.com/alvarezgonzalo0022/examenFinalGo/internal/appointments"
+	// "github.com/alvarezgonzalo0022/examenFinalGo/pkg/web"
+)
+
+var (
+	ErrPrepareStatement = errors.New("error prepare statement")
+	ErrExecStatement    = errors.New("error exec statement")
+	ErrLastInsertedId   = errors.New("error last inserted id")
+	ErrEmpty    = errors.New("empty list")
+	ErrNotFound = errors.New("paciente not found")
+)
+
+
+type repositoryappointmentmysql struct {
+	db *sql.DB;
+}
+
+func NewMySqlRepository(db *sql.DB) RepositoryAppointments {
+	return &repositoryappointmentmysql{db: db}
+}
+
+func (r *repositoryappointmentmysql) Create(ctx context.Context, appointment domain.Appointment) (domain.Appointment, error) {
+	statement, err := r.db.Prepare(QueryInsertAppointment)
+	if err != nil {
+		return domain.Appointment{}, ErrPrepareStatement
+	}
+
+	defer statement.Close()
+
+	result, err := statement.Exec(
+		appointment.IdDentist,
+		appointment.IdPatient,
+		appointment.AppointmentDate,
+		appointment.AppointmentTime,
+		appointment.Description,
+	)
+
+	if err != nil {
+		return domain.Appointment{}, ErrExecStatement
+	}
+
+	lastId, err := result.LastInsertId()
+	if err != nil {
+		return domain.Appointment{}, ErrLastInsertedId
+	}
+
+	appointment.Id = int(lastId)
+
+	return appointment, nil
+}
+
+func (r *repositoryappointmentmysql) GetAll(ctx context.Context) ([]domain.Appointment, error) {
+	rows, err := r.db.Query(QueryGetAllAppointment)
+	if err != nil {
+		return nil, domain.ErrQuery
+	}
+
+	defer rows.Close()
+
+	var appointments []domain.Appointment
+
+	for rows.Next() {
+		var appointment domain.Appointment
+
+		err := rows.Scan(
+			&appointment.Id,
+			&appointment.IdDentist,
+			&appointment.IdPatient,
+			&appointment.AppointmentDate,
+			&appointment.AppointmentTime,
+			&appointment.Description,
+		)
+
+		if err != nil {
+			log.Println(err)
+			continue
+		}
+
+		appointments = append(appointments, appointment)
+	}
+
+	return appointments, nil
+}
+
+
+//
+func (r *repositoryappointmentmysql) GetByID(ctx context.Context, id int) (domain.Appointment, error) {
+	statement, err := r.db.Prepare(QueryGetByIdAppointment)
+	if err != nil {
+		return domain.Appointment{}, ErrPrepareStatement
+	}
+
+	defer statement.Close()
+
+	row := statement.QueryRow(id)
+
+	var appointment domain.Appointment
+
+	err = row.Scan(
+		&appointment.Id,
+		&appointment.IdDentist,
+		&appointment.IdPatient,
+		&appointment.AppointmentDate,
+		&appointment.AppointmentTime,
+		&appointment.Description,
+	)
+
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return domain.Appointment{}, domain.ErrAppointmentNotFound
+		}
+		return domain.Appointment{}, domain.ErrScanRow
+	}
+
+	return appointment, nil
+}
+
+
+
+func (r *repositoryappointmentmysql) Update(ctx context.Context, appointment domain.Appointment, id int) (domain.Appointment, error) {
+    statement, err := r.db.Prepare(QueryUpdateAppointment)
+    if err != nil {
+        return domain.Appointment{}, err
+    }
+
+    defer statement.Close()
+
+    result, err := statement.Exec(
+		appointment.IdDentist,
+		appointment.IdPatient,
+		appointment.AppointmentDate,
+		appointment.AppointmentTime,
+		appointment.Description,
+    )
+
+    if err != nil {
+        return domain.Appointment{}, err
+    }
+
+    _, err = result.RowsAffected()
+    if err != nil {
+        return domain.Appointment{}, err
+    }
+
+    appointment.Id = id
+
+    return appointment, nil
+}
+
+
+func (r *repositoryappointmentmysql) Delete(ctx context.Context, id int) error {
+    result, err := r.db.Exec(QueryDeleteAppointment, id)
+    if err != nil {
+        return err
+    }
+
+    rowsAffected, err := result.RowsAffected()
+    if err != nil {
+        return err
+    }
+
+    if rowsAffected < 1 {
+        return ErrNotFound
+    }
+
+    return nil
+}
+
+func (r *repositoryappointmentmysql) Patch(
+	ctx context.Context,
+	appointment domain.Appointment,
+	id int) (domain.Appointment, error) {
+	statement, err := r.db.Prepare(QueryUpdateAppointment)
+	if err != nil {
+		return domain.Appointment{}, err
+	}
+
+	defer statement.Close()
+
+	result, err := statement.Exec(
+		appointment.IdDentist,
+		appointment.IdPatient,
+		appointment.AppointmentDate,
+		appointment.AppointmentTime,
+		appointment.Description,
+	)
+
+	if err != nil {
+		return domain.Appointment{}, err
+	}
+
+	_, err = result.RowsAffected()
+	if err != nil {
+		return domain.Appointment{}, err
+	}
+
+	return appointment, nil
+}

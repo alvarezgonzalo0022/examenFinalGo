@@ -12,4 +12,5 @@ var (
 	ErrAppointmentNotFound = errors.New("appointment not found")
 	ErrInvalidID           = errors.New("error invalid id")
 	ErrScanRow             = errors.New("error scanning row")
+	ErrQuery			   = errors.New("error query")
 )

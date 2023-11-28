@@ -12,7 +12,7 @@ var (
 	ErrExecStatement    = errors.New("error exec statement")
 	ErrLastInsertedId   = errors.New("error last inserted id")
 	ErrEmpty    = errors.New("empty list")
-	ErrNotFound = errors.New("paciente not found")
+	ErrNotFound = errors.New("patient not found")
 )
 
 type repositorypatientsmysql struct {
@@ -20,11 +20,11 @@ type repositorypatientsmysql struct {
 }
 
 // NewMemoryRepository ....
-func NewPacientesMySqlRepository(db *sql.DB) RepositoryPatients {
+func NewPatientsMySqlRepository(db *sql.DB) RepositoryPatients {
 	return &repositorypatientsmysql{db: db}
 }
 
-// Create is a method that creates a new paciente.
+// Create is a method that creates a new patient.
 func (r *repositorypatientsmysql) Create(ctx context.Context, patient domain.Patient) (domain.Patient, error) {
 	statement, err := r.db.Prepare(QueryInsertPatient)
 	if err != nil {
@@ -56,7 +56,7 @@ func (r *repositorypatientsmysql) Create(ctx context.Context, patient domain.Pat
 
 }
 
-// GetAll is a method that returns all pacientes.
+// GetAll is a method that returns all patients.
 func (r *repositorypatientsmysql) GetAll(ctx context.Context) ([]domain.Patient, error) {
 	rows, err := r.db.Query(QueryGetAllPatients)
 	if err != nil {
@@ -91,7 +91,7 @@ func (r *repositorypatientsmysql) GetAll(ctx context.Context) ([]domain.Patient,
 	return patients, nil
 }
 
-// GetByID is a method that returns a paciente by ID.
+// GetByID is a method that returns a patient by ID.
 func (r *repositorypatientsmysql) GetByID(ctx context.Context, id int) (domain.Patient, error) {
 	row := r.db.QueryRow(QueryGetPatientById, id)
 
@@ -113,7 +113,7 @@ func (r *repositorypatientsmysql) GetByID(ctx context.Context, id int) (domain.P
 	return patient, nil
 }
 
-// Update is a method that updates a paciente by ID.
+// Update is a method that updates a patient by ID.
 func (r *repositorypatientsmysql) Update(
 	ctx context.Context,
 	patient domain.Patient,
@@ -148,7 +148,7 @@ func (r *repositorypatientsmysql) Update(
 
 }
 
-// Delete is a method that deletes a paciente by ID.
+// Delete is a method that deletes a patient by ID.
 func (r *repositorypatientsmysql) Delete(ctx context.Context, id int) error {
 	result, err := r.db.Exec(QueryDeletePatient, id)
 	if err != nil {
@@ -167,7 +167,7 @@ func (r *repositorypatientsmysql) Delete(ctx context.Context, id int) error {
 	return nil
 }
 
-// Patch is a method that updates a paciente by ID.
+// Patch is a method that updates a patient by ID.
 func (r *repositorypatientsmysql) Patch(
 	ctx context.Context,
 	patient domain.Patient,
