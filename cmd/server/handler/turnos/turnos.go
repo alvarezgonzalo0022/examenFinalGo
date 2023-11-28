@@ -17,18 +17,41 @@ import (
 		}
 	}	
  
-	func (h *turnoHandler) Create(c *gin.Context) {
-		var turno domain.Turno
-		if err := c.ShouldBindJSON(&turno); err != nil {
-			web.NewResponse(c).BadRequest(err)
-			return
-		}
-		turno, err := h.service.Create(context.Background(), turno)
+// Paciente godoc
+//	@Summary		turno example
+//	@Description	Create a new turno
+//	@Tags			turno
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{object}	web.response
+//	@Failure		400	{object}	web.errorResponse
+//	@Failure		500	{object}	web.errorResponse
+//	@Router			/turnos [post]
+
+
+func (h *turnoHandler) HandlerCreate() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+
+		var request turno.RequestTurno
+
+		err := ctx.Bind(&request)
+
 		if err != nil {
-			web.NewResponse(c).InternalServerError(err)
+			web.Error(ctx, http.StatusBadRequest, "%s", "Bad Request")
 			return
 		}
-		web.NewResponse(c).Ok(turno)
+
+		response, err := c.service.Create(ctx, request)
+	
+		if err != nil {
+			web.Error(ctx, http.StatusInternalServerError, "%s. %s", "Internal Server Error", err)
+			return
+		}
+		
+		web.Success(ctx, http.StatusCreated, response)
 	}
+}
+
+
 
 	
