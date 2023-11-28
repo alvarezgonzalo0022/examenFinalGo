@@ -4,16 +4,16 @@ import (
 	"net/http"
 	"strconv"
 	"github.com/alvarezgonzalo0022/examenFinalGo/internal/domain"
-	 odontologos "github.com/alvarezgonzalo0022/examenFinalGo/internal/dentists"
+	odontologos "github.com/alvarezgonzalo0022/examenFinalGo/internal/dentists"
 	"github.com/alvarezgonzalo0022/examenFinalGo/pkg/web"
 	"github.com/gin-gonic/gin"
 )
 
 type Controlador struct {
-	service odontologos.ServiceOdontologos
+	service odontologos.ServiceDentists
 }
 
-func NewControladorOdontologo(service odontologos.ServiceOdontologos) *Controlador {
+func NewControladorOdontologo(service odontologos.ServiceDentists) *Controlador {
 	return &Controlador{
 		service: service,
 	}
@@ -25,7 +25,7 @@ func NewControladorOdontologo(service odontologos.ServiceOdontologos) *Controlad
 // @Tags odontologo
 // @Accept json
 // @Produce json
-// @Success 200 {object} web.response
+// @Success 200 {object} web.Response
 // @Failure 400 {object} web.errorResponse
 // @Failure 500 {object} web.errorResponse
 // @Router /odontologos [post]
@@ -60,7 +60,7 @@ func (c *Controlador) HandlerCreate() gin.HandlerFunc {
 // @Tags odontologo
 // @Accept json
 // @Produce json
-// @Success 200 {object} web.response
+// @Success 200 {object} 
 // @Failure 500 {object} web.errorResponse
 // @Router /odontologos [get]
 func (c *Controlador) HandlerGetAll() gin.HandlerFunc {
@@ -85,7 +85,7 @@ func (c *Controlador) HandlerGetAll() gin.HandlerFunc {
 // @Param id path int true "id del odontologo"
 // @Accept json
 // @Produce json
-// @Success 200 {object} web.response
+// @Success 200 {object} 
 // @Failure 400 {object} web.errorResponse
 // @Failure 500 {object} web.errorResponse
 // @Router /odontologos/:id [get]
@@ -115,14 +115,14 @@ func (c *Controlador) HandlerGetByID() gin.HandlerFunc {
 // @Tags odontologo
 // @Accept json
 // @Produce json
-// @Success 200 {object} web.response
+// @Success 200 {object} 
 // @Failure 400 {object} web.errorResponse
 // @Failure 500 {object} web.errorResponse
 // @Router /odontologos/:id [put]
 func (c *Controlador) HandlerUpdate() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 
-		var request domain.Odontologo
+		var request domain.Dentist
 
 		errBind := ctx.Bind(&request)
 
@@ -160,7 +160,7 @@ func (c *Controlador) HandlerUpdate() gin.HandlerFunc {
 // @Param id path int true "id del odontologo"
 // @Accept json
 // @Produce json
-// @Success 200 {object} web.response
+// @Success 200 {object} 
 // @Failure 400 {object} web.errorResponse
 // @Failure 500 {object} web.errorResponse
 // @Router /odontologos/:id [delete]
@@ -191,7 +191,7 @@ func (c *Controlador) HandlerDelete() gin.HandlerFunc {
 // @Param id path int true "id del odontologo"
 // @Accept json
 // @Produce json
-// @Success 200 {object} web.response
+// @Success 200 {object} 
 // @Failure 400 {object} web.errorResponse
 // @Failure 500 {object} web.errorResponse
 // @Router /odontologos/:id [patch]

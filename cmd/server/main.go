@@ -90,9 +90,9 @@ func connectDB() *sql.DB {
 	var dbUsername, dbPassword, dbHost, dbPort, dbName string
 	dbUsername = os.Getenv("DB_USERNAME")
 	dbPassword = os.Getenv("DB_PASSWORD")
-	dbHost = "localhost"
-	dbPort = "3306"
-	dbName = "my_db"
+	dbHost = os.Getenv("DB_HOST")
+	dbPort = os.Getenv("DB_PORT")
+	dbName = os.Getenv("DB_NAME")
 
 	// Create the data source.
 	dataSource := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", dbUsername, dbPassword, dbHost, dbPort, dbName)

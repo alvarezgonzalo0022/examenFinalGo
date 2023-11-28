@@ -4,16 +4,16 @@ import (
 	"net/http"
 	"strconv"
 	"github.com/alvarezgonzalo0022/examenFinalGo/internal/domain"
-	pacientes "github.com/alvarezgonzalo0022/examenFinalGo/internal/pacientes"
+	pacientes "github.com/alvarezgonzalo0022/examenFinalGo/internal/patients"
 	"github.com/alvarezgonzalo0022/examenFinalGo/pkg/web"
 	"github.com/gin-gonic/gin"
 )
 
 type Controlador struct {
-	service pacientes.ServicePacientes
+	service pacientes.ServicePatients
 }
 
-func NewControladorPaciente(service pacientes.ServicePacientes) *Controlador {
+func NewControladorPaciente(service pacientes.ServicePatients) *Controlador {
 	return &Controlador{
 		service: service,
 	}
@@ -32,7 +32,7 @@ func NewControladorPaciente(service pacientes.ServicePacientes) *Controlador {
 func (c *Controlador) HandlerCreate() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 
-		var request domain.Paciente
+		var request domain.Patient
 
 		err := ctx.Bind(&request)
 
@@ -122,7 +122,7 @@ func (c *Controlador) HandlerGetByID() gin.HandlerFunc {
 func (c *Controlador) HandlerUpdate() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 
-		var request domain.Paciente
+		var request domain.Patient
 
 		errBind := ctx.Bind(&request)
 
@@ -203,7 +203,7 @@ func (c *Controlador) HandlerPatch() gin.HandlerFunc {
 			return
 		}
 
-		var request domain.Paciente
+		var request domain.Patient
 
 		errBind := ctx.Bind(&request)
 

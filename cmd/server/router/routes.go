@@ -5,8 +5,8 @@ import (
 	"github.com/alvarezgonzalo0022/examenFinalGo/cmd/server/handler/ping"
 	handlerOdontologo "github.com/alvarezgonzalo0022/examenFinalGo/cmd/server/handler/odontologos"
 	handlerPaciente "github.com/alvarezgonzalo0022/examenFinalGo/cmd/server/handler/pacientes"
-	odontologo "github.com/alvarezgonzalo0022/examenFinalGo/internal/odontologos"
-	paciente "github.com/alvarezgonzalo0022/examenFinalGo/internal/pacientes"
+	odontologo "github.com/alvarezgonzalo0022/examenFinalGo/internal/dentists"
+	paciente "github.com/alvarezgonzalo0022/examenFinalGo/internal/patients"
 	"github.com/alvarezgonzalo0022/examenFinalGo/pkg/middleware"
 	"github.com/gin-gonic/gin"
 )
@@ -48,7 +48,7 @@ func (r *router) setGroup() {
 func (r *router) buildOdontologoRoutes() {
 	// Create a new odontologos controller.
 	repository := odontologo.NewMySqlRepository(r.db)
-	service := odontologo.NewServiceOdontologo(repository)
+	service := odontologo.NewServiceDentist(repository)
 	controlador := handlerOdontologo.NewControladorOdontologo(service)
 
 	grupoOdontologo := r.routerGroup.Group("/odontologos")
