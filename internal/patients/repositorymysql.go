@@ -4,6 +4,8 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"fmt"
+
 	"github.com/alvarezgonzalo0022/examenFinalGo/internal/domain"
 )
 
@@ -94,6 +96,9 @@ func (r *repositorypatientsmysql) GetAll(ctx context.Context) ([]domain.Patient,
 // GetByID is a method that returns a patient by ID.
 func (r *repositorypatientsmysql) GetByID(ctx context.Context, id int) (domain.Patient, error) {
 	row := r.db.QueryRow(QueryGetPatientById, id)
+	if err := row.Err(); err != nil {
+		return domain.Patient{}, err
+	}
 
 	var patient domain.Patient
 
@@ -107,8 +112,13 @@ func (r *repositorypatientsmysql) GetByID(ctx context.Context, id int) (domain.P
 	)
 
 	if err != nil {
-		return domain.Patient{}, err
-	}
+        if errors.Is(err, sql.ErrNoRows) {
+            // Devolver un error específico de tu dominio indicando que el paciente no se encontró
+            return domain.Patient{}, domain.ErrPatientNotFound
+        }
+        // Otros errores relacionados con la base de datos
+        return domain.Patient{}, fmt.Errorf("error scanning row %v", err)
+    }
 
 	return patient, nil
 }
@@ -131,15 +141,20 @@ func (r *repositorypatientsmysql) Update(
 		patient.Address,
 		patient.Document,
 		patient.AdmissionDate,
+		id,
 	)
 
 	if err != nil {
 		return domain.Patient{}, err
 	}
 
-	_, err = result.RowsAffected()
+	rowsAffected, err := result.RowsAffected()
 	if err != nil {
 		return domain.Patient{}, err
+	}
+
+	if rowsAffected == 0 {
+		return domain.Patient{}, fmt.Errorf("no se encontró ningún paciente con ID %d", id)
 	}
 
 	patient.Id = id
@@ -191,9 +206,13 @@ func (r *repositorypatientsmysql) Patch(
 		return domain.Patient{}, err
 	}
 
-	_, err = result.RowsAffected()
+	rowsAffected, err := result.RowsAffected()
 	if err != nil {
 		return domain.Patient{}, err
+	}
+
+	if rowsAffected == 0 {
+		return domain.Patient{}, fmt.Errorf("no se encontró ningún paciente con ID %d", id)
 	}
 
 	return patient, nil

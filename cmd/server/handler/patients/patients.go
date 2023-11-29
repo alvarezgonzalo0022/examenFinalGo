@@ -1,8 +1,10 @@
 package patients
 
 import (
+	"log"
 	"net/http"
 	"strconv"
+
 	"github.com/alvarezgonzalo0022/examenFinalGo/internal/domain"
 	patients "github.com/alvarezgonzalo0022/examenFinalGo/internal/patients"
 	"github.com/alvarezgonzalo0022/examenFinalGo/pkg/web"
@@ -47,9 +49,7 @@ func (c *Controller) HandlerCreate() gin.HandlerFunc {
 			return
 		}
 
-		web.Success(ctx, http.StatusOK, gin.H{
-			"data": patient,
-		})
+		web.Success(ctx, http.StatusOK, patient)
 
 	}
 }
@@ -72,9 +72,7 @@ func (c *Controller) HandlerGetAll() gin.HandlerFunc {
 			return
 		}
 
-		web.Success(ctx, http.StatusOK, gin.H{
-			"data": patients,
-		})
+		web.Success(ctx, http.StatusOK, patients)
 	}
 }
 
@@ -93,19 +91,19 @@ func (c *Controller) HandlerGetByID() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		id, err := strconv.Atoi(ctx.Param("id"))
 		if err != nil {
+			log.Printf("Error al convertir ID: %v", err)
 			web.Error(ctx, http.StatusBadRequest, "%s", "invalid id")
 			return
 		}
 
 		patient, err := c.service.GetByID(ctx, id)
 		if err != nil {
+			log.Printf("Error al obtener paciente por ID: %v", err)
 			web.Error(ctx, http.StatusInternalServerError, "%s", "internal server error")
 			return
 		}
 
-		web.Success(ctx, http.StatusOK, gin.H{
-			"data": patient,
-		})
+		web.Success(ctx, http.StatusOK, patient)
 	}
 }
 
@@ -146,9 +144,7 @@ func (c *Controller) HandlerUpdate() gin.HandlerFunc {
 			return
 		}
 
-		web.Success(ctx, http.StatusOK, gin.H{
-			"data": patient,
-		})
+		web.Success(ctx, http.StatusOK, patient)
 
 	}
 }
@@ -218,8 +214,6 @@ func (c *Controller) HandlerPatch() gin.HandlerFunc {
 			return
 		}
 
-		web.Success(ctx, http.StatusOK, gin.H{
-			"data": patient,
-		})
+		web.Success(ctx, http.StatusOK, patient)
 	}
 }

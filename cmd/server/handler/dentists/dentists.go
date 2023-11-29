@@ -47,9 +47,7 @@ func (c *Controller) HandlerCreate() gin.HandlerFunc {
 			return
 		}
 
-		web.Success(ctx, http.StatusOK, gin.H{
-			"data": dentist,
-		})
+		web.Success(ctx, http.StatusOK, dentist)
 
 	}
 }
@@ -72,9 +70,7 @@ func (c *Controller) HandlerGetAll() gin.HandlerFunc {
 			return
 		}
 
-		web.Success(ctx, http.StatusOK, gin.H{
-			"data": dentists,
-		})
+		web.Success(ctx, http.StatusOK, dentists)
 	}
 }
 
@@ -103,9 +99,7 @@ func (c *Controller) HandlerGetByID() gin.HandlerFunc {
 			return
 		}
 
-		web.Success(ctx, http.StatusOK, gin.H{
-			"data": dentist,
-		})
+		web.Success(ctx, http.StatusOK, dentist)
 	}
 }
 
@@ -146,9 +140,7 @@ func (c *Controller) HandlerUpdate() gin.HandlerFunc {
 			return
 		}
 
-		web.Success(ctx, http.StatusOK, gin.H{
-			"data": dentist,
-		})
+		web.Success(ctx, http.StatusOK, dentist)
 
 	}
 }
@@ -218,8 +210,6 @@ func (c *Controller) HandlerPatch() gin.HandlerFunc {
 			return
 		}
 
-		web.Success(ctx, http.StatusOK, gin.H{
-			"data": dentist,
-		})
+		web.Success(ctx, http.StatusOK, dentist)
 	}
 }
