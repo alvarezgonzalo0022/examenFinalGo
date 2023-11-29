@@ -60,10 +60,10 @@ func (r *repositoryappointmentmysql) Create(ctx context.Context, appointment dom
 }
 
 func (r *repositoryappointmentmysql) GetAll(ctx context.Context) ([]domain.AppointmentResponse, error) {
-    query := `SELECT appointments.*, dentists.last_name AS dentist_lastname, patients.last_name AS patient_lastname FROM appointments INNER JOIN dentists ON appointments.dentist_id = dentists.id INNER JOIN patients ON appointments.patient_id = patients.id `
+   // query := `SELECT appointments.*, dentists.last_name AS dentist_lastname, patients.last_name AS patient_lastname FROM appointments INNER JOIN dentists ON appointments.dentist_id = dentists.id INNER JOIN patients ON appointments.patient_id = patients.id `
 
 
-	rows, err := r.db.Query(query)
+	rows, err := r.db.Query(QueryGetAllAppointment)
     if err != nil {
         return nil, err
     }
@@ -95,35 +95,41 @@ func (r *repositoryappointmentmysql) GetAll(ctx context.Context) ([]domain.Appoi
 }
 
 func (r *repositoryappointmentmysql) GetByID(ctx context.Context, id int) (domain.Appointment, error) {
-	statement, err := r.db.Prepare(QueryGetByIdAppointment)
-	if err != nil {
-		return domain.Appointment{}, ErrPrepareStatement
-	}
+    row := r.db.QueryRow(QueryGetByIdAppointment, id)
 
-	defer statement.Close()
+    var appointment domain.Appointment
+    var appointmentTimeStr string 
 
-	row := statement.QueryRow(id)
+    err := row.Scan(
+        &appointment.Id,
+        &appointment.IdDentist,
+        &appointment.IdPatient,
+        &appointment.AppointmentDate,
+        &appointmentTimeStr, 
+        &appointment.Description,
+    )
 
-	var appointment domain.Appointment
+    if err != nil {
+        if err == sql.ErrNoRows {
+            return domain.Appointment{}, ErrNotFound
+        }
+        return domain.Appointment{}, err
+    }
 
-	err = row.Scan(
-		&appointment.Id,
-		&appointment.IdDentist,
-		&appointment.IdPatient,
-		&appointment.AppointmentDate,
-		&appointment.AppointmentTime,
-		&appointment.Description,
-	)
 
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return domain.Appointment{}, domain.ErrAppointmentNotFound
-		}
-		return domain.Appointment{}, domain.ErrScanRow
-	}
+    if appointmentTimeStr != "" {
+        parsedTime, err := time.Parse("15:04:05", appointmentTimeStr) 
+        if err != nil {
+            return domain.Appointment{}, err
+        }
+        appointment.AppointmentTime = parsedTime
+    }
 
-	return appointment, nil
+    return appointment, nil
 }
+
+
+
 
 func (r *repositoryappointmentmysql) Update(ctx context.Context, appointment domain.Appointment, id int) (domain.Appointment, error) {
 	statement, err := r.db.Prepare(QueryUpdateAppointment)

@@ -97,7 +97,7 @@ func (r *router) buildAppointmentRoutes() {
 		groupAppointments.GET("", middleware.Authenticate(), controller.HandlerGetAll())
 		groupAppointments.GET("/:id", controller.HandlerGetByID())
 		// groupAppointments.PUT("/:id", middleware.Authenticate(), controller.HandlerUpdate())
-		// groupAppointments.DELETE("/:id", middleware.Authenticate(), controller.HandlerDelete())
+		 groupAppointments.DELETE("/:id", middleware.Authenticate(), controller.HandlerDelete())
 		// groupAppointments.PATCH("/:id", middleware.Authenticate(), controller.HandlerPatch())
 	}
 }
