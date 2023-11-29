@@ -8,7 +8,7 @@ import (
 
 type ServiceAppointments interface {
 	Create(ctx context.Context, appointment domain.Appointment) (domain.Appointment, error)
-	GetAll(ctx context.Context) ([]domain.Appointment, error)
+	GetAll(ctx context.Context) ([]domain.AppointmentResponse, error)
 	GetByID(ctx context.Context, id int) (domain.Appointment, error)
 	Update(ctx context.Context, appointment domain.Appointment, id int) (domain.Appointment, error)
 	Delete(ctx context.Context, id int) error
@@ -34,11 +34,11 @@ func (s *service) Create(ctx context.Context, appointment domain.Appointment) (d
 }
 
 // GetAll is a method that returns all appointment.
-func (s *service) GetAll(ctx context.Context) ([]domain.Appointment, error) {
+func (s *service) GetAll(ctx context.Context) ([]domain.AppointmentResponse, error) {
 	appointments, err := s.repository.GetAll(ctx)
 	if err != nil {
 		log.Println("[AppointmentsService][GetAll] error getting all appointments", err)
-		return []domain.Appointment{}, err
+		return []domain.AppointmentResponse{}, err
 	}
 
 	return appointments, nil

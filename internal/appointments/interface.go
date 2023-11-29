@@ -7,7 +7,7 @@ import (
 
 type RepositoryAppointments interface {
 	Create(ctx context.Context, appointment domain.Appointment) (domain.Appointment, error)
-	GetAll(ctx context.Context) ([]domain.Appointment, error)
+	GetAll(ctx context.Context) ([]domain.AppointmentResponse, error)
 	GetByID(ctx context.Context, id int) (domain.Appointment, error)
 	Update(ctx context.Context, appointment domain.Appointment, id int) (domain.Appointment, error)
 	Delete(ctx context.Context, id int) error

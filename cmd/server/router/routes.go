@@ -3,9 +3,9 @@ package routes
 import (
 	"database/sql"
 
+	handlerAppointment "github.com/alvarezgonzalo0022/examenFinalGo/cmd/server/handler/appointments"
 	handlerDentist "github.com/alvarezgonzalo0022/examenFinalGo/cmd/server/handler/dentists"
 	handlerPatient "github.com/alvarezgonzalo0022/examenFinalGo/cmd/server/handler/patients"
-	handlerAppointment "github.com/alvarezgonzalo0022/examenFinalGo/cmd/server/handler/appointments"
 	"github.com/alvarezgonzalo0022/examenFinalGo/cmd/server/handler/ping"
 	appointments "github.com/alvarezgonzalo0022/examenFinalGo/internal/appointments"
 	dentists "github.com/alvarezgonzalo0022/examenFinalGo/internal/dentists"
@@ -95,7 +95,7 @@ func (r *router) buildAppointmentRoutes() {
 	{
 		// groupAppointments.POST("", middleware.Authenticate(), controller.HandlerCreate())
 		groupAppointments.GET("", middleware.Authenticate(), controller.HandlerGetAll())
-		// groupAppointments.GET("/:id", controller.HandlerGetByID())
+		groupAppointments.GET("/:id", controller.HandlerGetByID())
 		// groupAppointments.PUT("/:id", middleware.Authenticate(), controller.HandlerUpdate())
 		// groupAppointments.DELETE("/:id", middleware.Authenticate(), controller.HandlerDelete())
 		// groupAppointments.PATCH("/:id", middleware.Authenticate(), controller.HandlerPatch())
