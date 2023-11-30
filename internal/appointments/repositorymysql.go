@@ -29,10 +29,10 @@ func NewMySqlRepository(db *sql.DB) RepositoryAppointments {
 	return &repositoryappointmentmysql{db: db}
 }
 
-func (r *repositoryappointmentmysql) Create(ctx context.Context, appointment domain.Appointment) (domain.Appointment, error) {
+func (r *repositoryappointmentmysql) Create(ctx context.Context, appointment domain.AppointmentRequest) (domain.AppointmentRequest, error) {
 	statement, err := r.db.Prepare(QueryInsertAppointment)
 	if err != nil {
-		return domain.Appointment{}, ErrPrepareStatement
+		return domain.AppointmentRequest{}, ErrPrepareStatement
 	}
 
 	defer statement.Close()
@@ -46,12 +46,12 @@ func (r *repositoryappointmentmysql) Create(ctx context.Context, appointment dom
 	)
 
 	if err != nil {
-		return domain.Appointment{}, ErrExecStatement
+		return domain.AppointmentRequest{}, ErrExecStatement
 	}
 
 	lastId, err := result.LastInsertId()
 	if err != nil {
-		return domain.Appointment{}, ErrLastInsertedId
+		return domain.AppointmentRequest{}, ErrLastInsertedId
 	}
 
 	appointment.Id = int(lastId)
@@ -94,10 +94,10 @@ func (r *repositoryappointmentmysql) GetAll(ctx context.Context) ([]domain.Appoi
 
 }
 
-func (r *repositoryappointmentmysql) GetByID(ctx context.Context, id int) (domain.Appointment, error) {
+func (r *repositoryappointmentmysql) GetByID(ctx context.Context, id int) (domain.AppointmentResponse, error) {
     row := r.db.QueryRow(QueryGetByIdAppointment, id)
 
-    var appointment domain.Appointment
+    var appointment domain.AppointmentResponse
     var appointmentTimeStr string 
 
     err := row.Scan(
@@ -107,20 +107,22 @@ func (r *repositoryappointmentmysql) GetByID(ctx context.Context, id int) (domai
         &appointment.AppointmentDate,
         &appointmentTimeStr, 
         &appointment.Description,
+		&appointment.PatientLastName,
+		&appointment.DentistLastName,
     )
 
     if err != nil {
         if err == sql.ErrNoRows {
-            return domain.Appointment{}, ErrNotFound
+            return domain.AppointmentResponse{}, ErrNotFound
         }
-        return domain.Appointment{}, err
+        return domain.AppointmentResponse{}, err
     }
 
 
     if appointmentTimeStr != "" {
         parsedTime, err := time.Parse("15:04:05", appointmentTimeStr) 
         if err != nil {
-            return domain.Appointment{}, err
+            return domain.AppointmentResponse{}, err
         }
         appointment.AppointmentTime = parsedTime
     }
@@ -131,10 +133,10 @@ func (r *repositoryappointmentmysql) GetByID(ctx context.Context, id int) (domai
 
 
 
-func (r *repositoryappointmentmysql) Update(ctx context.Context, appointment domain.Appointment, id int) (domain.Appointment, error) {
+func (r *repositoryappointmentmysql) Update(ctx context.Context, appointment domain.AppointmentRequest, id int) (domain.AppointmentRequest, error) {
 	statement, err := r.db.Prepare(QueryUpdateAppointment)
 	if err != nil {
-		return domain.Appointment{}, err
+		return domain.AppointmentRequest{}, err
 	}
 
 	defer statement.Close()
@@ -148,12 +150,12 @@ func (r *repositoryappointmentmysql) Update(ctx context.Context, appointment dom
 	)
 
 	if err != nil {
-		return domain.Appointment{}, err
+		return domain.AppointmentRequest{}, err
 	}
 
 	_, err = result.RowsAffected()
 	if err != nil {
-		return domain.Appointment{}, err
+		return domain.AppointmentRequest{}, err
 	}
 
 	appointment.Id = id
@@ -181,11 +183,11 @@ func (r *repositoryappointmentmysql) Delete(ctx context.Context, id int) error {
 
 func (r *repositoryappointmentmysql) Patch(
 	ctx context.Context,
-	appointment domain.Appointment,
-	id int) (domain.Appointment, error) {
+	appointment domain.AppointmentRequest,
+	id int) (domain.AppointmentRequest, error) {
 	statement, err := r.db.Prepare(QueryUpdateAppointment)
 	if err != nil {
-		return domain.Appointment{}, err
+		return domain.AppointmentRequest{}, err
 	}
 
 	defer statement.Close()
@@ -199,12 +201,12 @@ func (r *repositoryappointmentmysql) Patch(
 	)
 
 	if err != nil {
-		return domain.Appointment{}, err
+		return domain.AppointmentRequest{}, err
 	}
 
 	_, err = result.RowsAffected()
 	if err != nil {
-		return domain.Appointment{}, err
+		return domain.AppointmentRequest{}, err
 	}
 
 	return appointment, nil

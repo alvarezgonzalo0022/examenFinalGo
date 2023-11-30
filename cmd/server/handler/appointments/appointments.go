@@ -29,9 +29,7 @@ func (c *Controller) HandlerGetAll() gin.HandlerFunc {
 			return
 		}
 
-		web.Success(ctx, http.StatusOK, gin.H{
-			"data": appointments,
-		})
+		web.Success(ctx, http.StatusOK, appointments)
 	}
 }
 

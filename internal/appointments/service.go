@@ -7,12 +7,12 @@ import (
 )
 
 type ServiceAppointments interface {
-	Create(ctx context.Context, appointment domain.Appointment) (domain.Appointment, error)
+	Create(ctx context.Context, appointment domain.AppointmentRequest) (domain.AppointmentRequest, error)
 	GetAll(ctx context.Context) ([]domain.AppointmentResponse, error)
-	GetByID(ctx context.Context, id int) (domain.Appointment, error)
-	Update(ctx context.Context, appointment domain.Appointment, id int) (domain.Appointment, error)
+	GetByID(ctx context.Context, id int) (domain.AppointmentResponse, error)
+	Update(ctx context.Context, appointment domain.AppointmentRequest, id int) (domain.AppointmentRequest, error)
 	Delete(ctx context.Context, id int) error
-	Patch(ctx context.Context, appointment domain.Appointment, id int) (domain.Appointment, error)
+	Patch(ctx context.Context, appointment domain.AppointmentRequest, id int) (domain.AppointmentRequest, error)
 }
 
 type service struct {
@@ -24,11 +24,11 @@ func NewServiceAppointments(repository RepositoryAppointments) ServiceAppointmen
 }
 
 // Create is a method that creates a new appointment.
-func (s *service) Create(ctx context.Context, appointment domain.Appointment) (domain.Appointment, error) {
+func (s *service) Create(ctx context.Context, appointment domain.AppointmentRequest) (domain.AppointmentRequest, error) {
 	appointment, err := s.repository.Create(ctx, appointment)
 	if err != nil {
 		log.Println("[AppointmentsService][Create] error creating appointment", err)
-		return domain.Appointment{}, err
+		return domain.AppointmentRequest{}, err
 	} 
     return appointment, nil;
 }
@@ -45,22 +45,22 @@ func (s *service) GetAll(ctx context.Context) ([]domain.AppointmentResponse, err
 }
 
 // GetByID is a method that returns a appointment by ID.
-func (s *service) GetByID(ctx context.Context, id int) (domain.Appointment, error) {
+func (s *service) GetByID(ctx context.Context, id int) (domain.AppointmentResponse, error) {
 	appointment, err := s.repository.GetByID(ctx, id)
 	if err != nil {
 		log.Println("[AppointmentsService][GetByID] error getting appointment by ID", err)
-		return domain.Appointment{}, err
+		return domain.AppointmentResponse{}, err
 	}
 
 	return appointment, nil
 }
 
 // Update is a method that updates a appointment by ID.
-func (s *service) Update(ctx context.Context, appointment domain.Appointment, id int) (domain.Appointment, error) {
+func (s *service) Update(ctx context.Context, appointment domain.AppointmentRequest, id int) (domain.AppointmentRequest, error) {
 	appointment, err := s.repository.Update(ctx, appointment, id)
 	if err != nil {
 		log.Println("[AppointmentsService][Update] error updating appointment by ID", err)
-		return domain.Appointment{}, err
+		return domain.AppointmentRequest{}, err
 	}
 
 	return appointment, nil
@@ -78,19 +78,35 @@ func (s *service) Delete(ctx context.Context, id int) error {
 }
 
 // Patch is a method that updates a appointment by ID.
-func (s *service) Patch(ctx context.Context, appointment domain.Appointment, id int) (domain.Appointment, error) {
+func (s *service) Patch(ctx context.Context, appointment domain.AppointmentRequest, id int) (domain.AppointmentRequest, error) {
+	// ALGO ASI
+	// appointmentStore, err := s.repository.GetByID(ctx, id)
+	// if err != nil {
+	// 	log.Println("[AppointmentService][Patch] error getting appointment by ID", err)
+	// 	return domain.AppointmentRequest{}, err
+	// }
+
+	// appointmentPatch, err := s.validatePatch(appointmentStore, appointment)
+	// if err != nil {
+	// 	log.Println("[AppointmentService][Patch] error validating appointment", err)
+	// 	return domain.AppointmentRequest{}, err
+	// }
+	
 	appointment, err := s.repository.Patch(ctx, appointment, id)
 	if err != nil {
 		log.Println("[AppointmentsService][Patch] error patching appointment by ID", err)
-		return domain.Appointment{}, err
+		return domain.AppointmentRequest{}, err
 	}
 
 	return appointment, nil
 }
 
-func (s *service) validatePatch(appointmentStore domain.Appointment, appointment domain.Appointment) (domain.Appointment, error) {
+// hay que validar el patch utilizando esta funcion que devuelve un response que tiene turnoid, dentistid, patientid, 
+// fecha, hora, descripcion y que compara con el request que se manda por parametro en la funcion patch y no darle bola 
+//a dentistlastname y patientlastname IR A LINEA 82
+func (s *service) validatePatch(appointmentStore domain.AppointmentResponse, appointment domain.AppointmentResponse) (domain.AppointmentResponse, error) {
 	if appointmentStore.Id != appointment.Id {
-		return domain.Appointment{}, domain.ErrInvalidID
+		return domain.AppointmentResponse{}, domain.ErrInvalidID
 	}
 
 	if appointmentStore.AppointmentDate != appointment.AppointmentDate {
@@ -115,4 +131,3 @@ func (s *service) validatePatch(appointmentStore domain.Appointment, appointment
 
 	return appointmentStore, nil
 }
-

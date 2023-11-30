@@ -6,10 +6,10 @@ import (
 )
 
 type RepositoryAppointments interface {
-	Create(ctx context.Context, appointment domain.Appointment) (domain.Appointment, error)
+	Create(ctx context.Context, appointment domain.AppointmentRequest) (domain.AppointmentRequest, error)
 	GetAll(ctx context.Context) ([]domain.AppointmentResponse, error)
-	GetByID(ctx context.Context, id int) (domain.Appointment, error)
-	Update(ctx context.Context, appointment domain.Appointment, id int) (domain.Appointment, error)
+	GetByID(ctx context.Context, id int) (domain.AppointmentResponse, error)
+	Update(ctx context.Context, appointment domain.AppointmentRequest, id int) (domain.AppointmentRequest, error)
 	Delete(ctx context.Context, id int) error
-	Patch(ctx context.Context, appointment domain.Appointment, id int) (domain.Appointment, error)
+	Patch(ctx context.Context, appointment domain.AppointmentRequest, id int) (domain.AppointmentRequest, error)
 }
