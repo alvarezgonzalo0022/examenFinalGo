@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"log"
 	"time"
 
 	// "time"
@@ -37,15 +38,34 @@ func (r *repositoryappointmentmysql) Create(ctx context.Context, appointment dom
 
 	defer statement.Close()
 
+	appointmentDate, err := time.Parse("2006-01-02", appointment.AppointmentDate)
+    if err != nil {
+        log.Println("Error parsing appointment date:", err)
+        return domain.AppointmentRequest{}, domain.ErrInvalidDateFormat
+    }
+	appointmentDate = time.Date(appointmentDate.Year(), appointmentDate.Month(), appointmentDate.Day(), 0, 0, 0, 0, time.UTC)
+
+	appointmentTime, err := time.Parse("15:04", appointment.AppointmentTime)
+    if err != nil {
+        // Manejar el error según tus necesidades
+        log.Println("Error parsing appointment time:", err)
+        return domain.AppointmentRequest{}, domain.ErrInvalidTimeFormat
+    }
+	appointmentTime = time.Date(1, 1, 1, appointmentTime.Hour(), appointmentTime.Minute(), 0, 0, time.UTC)
+
+
+	log.Println("Executing SQL statement")
 	result, err := statement.Exec(
-		appointment.IdDentist,
-		appointment.IdPatient,
-		appointment.AppointmentDate,
-		appointment.AppointmentTime,
+		appointment.PatientId,
+		appointment.DentistId,
+		appointmentDate,
+		appointmentTime,
 		appointment.Description,
 	)
+	log.Println("Executing SQL statement")
 
 	if err != nil {
+		log.Println("Error:", err)
 		return domain.AppointmentRequest{}, ErrExecStatement
 	}
 
@@ -142,8 +162,8 @@ func (r *repositoryappointmentmysql) Update(ctx context.Context, appointment dom
 	defer statement.Close()
 
 	result, err := statement.Exec(
-		appointment.IdDentist,
-		appointment.IdPatient,
+		appointment.DentistId,
+		appointment.PatientId,
 		appointment.AppointmentDate,
 		appointment.AppointmentTime,
 		appointment.Description,
@@ -193,8 +213,8 @@ func (r *repositoryappointmentmysql) Patch(
 	defer statement.Close()
 
 	result, err := statement.Exec(
-		appointment.IdDentist,
-		appointment.IdPatient,
+		appointment.DentistId,
+		appointment.PatientId,
 		appointment.AppointmentDate,
 		appointment.AppointmentTime,
 		appointment.Description,

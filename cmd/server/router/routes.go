@@ -93,7 +93,7 @@ func (r *router) buildAppointmentRoutes() {
 
 	groupAppointments := r.routerGroup.Group("/appointments")
 	{
-		// groupAppointments.POST("", middleware.Authenticate(), controller.HandlerCreate())
+		groupAppointments.POST("", middleware.Authenticate(), controller.HandlerCreate())
 		groupAppointments.GET("", middleware.Authenticate(), controller.HandlerGetAll())
 		groupAppointments.GET("/:id", controller.HandlerGetByID())
 		// groupAppointments.PUT("/:id", middleware.Authenticate(), controller.HandlerUpdate())

@@ -18,7 +18,7 @@ import (
 )
 
 const (
-	puerto = "8080"
+	puerto = "localhost:8080"
 )
 
 // @title           Swagger Example API

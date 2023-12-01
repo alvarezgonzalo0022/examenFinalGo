@@ -1,11 +1,15 @@
 package appointments
 
 import (
+	"log"
 	"net/http"
 	"strconv"
 
 	// "github.com/alvarezgonzalo0022/examenFinalGo/internal/domain"
 	"github.com/alvarezgonzalo0022/examenFinalGo/internal/appointments"
+	"github.com/alvarezgonzalo0022/examenFinalGo/internal/domain"
+
+	// "github.com/alvarezgonzalo0022/examenFinalGo/internal/domain"
 	"github.com/alvarezgonzalo0022/examenFinalGo/pkg/web"
 	"github.com/gin-gonic/gin"
 )
@@ -17,6 +21,30 @@ type Controller struct {
 func NewControllerAppointment(service appointments.ServiceAppointments) *Controller {
 	return &Controller{
 		service: service,
+	}
+}
+
+func (c *Controller) HandlerCreate() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+
+		var request domain.AppointmentRequest
+
+		err := ctx.Bind(&request)
+
+		if err != nil {
+			log.Println("Error binding request:", err)
+			web.Error(ctx, http.StatusBadRequest, "%s", "bad request")
+			return
+		}
+
+		appointment, err := c.service.Create(ctx, request)
+		if err != nil {
+			web.Error(ctx, http.StatusInternalServerError, "%s", "internal server error")
+			return
+		}
+
+		web.Success(ctx, http.StatusOK, appointment)
+
 	}
 }
 
