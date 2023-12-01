@@ -87,17 +87,21 @@ func (r *router) buildPatientRoutes() {
 
 func (r *router) buildAppointmentRoutes() {
 	// Create a new patients controller.
-	repository := appointments.NewMySqlRepository(r.db)
-	service := appointments.NewServiceAppointments(repository)
-	controller := handlerAppointment.NewControllerAppointment(service)
+	dentistRepository := dentists.NewMySqlRepository(r.db)
+	dentistService := dentists.NewServiceDentist(dentistRepository)
+	patientRepository := patients.NewPatientsMySqlRepository(r.db)
+	patientService := patients.NewServicePatients(patientRepository)
+	appointmentRepository := appointments.NewMySqlRepository(r.db, dentistService, patientService)
+	appointmentService := appointments.NewServiceAppointments(appointmentRepository, dentistService, patientService)
+	appointmentController := handlerAppointment.NewControllerAppointment(appointmentService, patientService, dentistService)
 
 	groupAppointments := r.routerGroup.Group("/appointments")
 	{
-		groupAppointments.POST("", middleware.Authenticate(), controller.HandlerCreate())
-		groupAppointments.GET("", middleware.Authenticate(), controller.HandlerGetAll())
-		groupAppointments.GET("/:id", controller.HandlerGetByID())
+		groupAppointments.POST("", middleware.Authenticate(), appointmentController.HandlerCreate())
+		groupAppointments.GET("", middleware.Authenticate(), appointmentController.HandlerGetAll())
+		groupAppointments.GET("/:id", appointmentController.HandlerGetByID())
 		// groupAppointments.PUT("/:id", middleware.Authenticate(), controller.HandlerUpdate())
-		 groupAppointments.DELETE("/:id", middleware.Authenticate(), controller.HandlerDelete())
+		 groupAppointments.DELETE("/:id", middleware.Authenticate(), appointmentController.HandlerDelete())
 		// groupAppointments.PATCH("/:id", middleware.Authenticate(), controller.HandlerPatch())
 	}
 }

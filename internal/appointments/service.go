@@ -3,11 +3,14 @@ package appointments
 import (
 	"context"
 	"log"
+
+	"github.com/alvarezgonzalo0022/examenFinalGo/internal/dentists"
 	"github.com/alvarezgonzalo0022/examenFinalGo/internal/domain"
+	"github.com/alvarezgonzalo0022/examenFinalGo/internal/patients"
 )
 
 type ServiceAppointments interface {
-	Create(ctx context.Context, appointment domain.AppointmentRequest) (domain.AppointmentRequest, error)
+	Create(ctx context.Context, request domain.AppointmentRequest) (domain.AppointmentRequest, error)
 	GetAll(ctx context.Context) ([]domain.AppointmentResponse, error)
 	GetByID(ctx context.Context, id int) (domain.AppointmentResponse, error)
 	Update(ctx context.Context, appointment domain.AppointmentRequest, id int) (domain.AppointmentRequest, error)
@@ -17,20 +20,40 @@ type ServiceAppointments interface {
 
 type service struct {
 	repository RepositoryAppointments
+	dentistService dentists.ServiceDentists
+	patientService patients.ServicePatients
 }
 
-func NewServiceAppointments(repository RepositoryAppointments) ServiceAppointments {
-	return &service{repository: repository}
+func NewServiceAppointments(repository RepositoryAppointments,
+	dentistService dentists.ServiceDentists,
+	patientService patients.ServicePatients,) ServiceAppointments {
+	return &service{
+		repository: repository,
+		dentistService:  dentistService,
+		patientService:  patientService,
+	}
 }
 
 // Create is a method that creates a new appointment.
 func (s *service) Create(ctx context.Context, appointment domain.AppointmentRequest) (domain.AppointmentRequest, error) {
-	appointment, err := s.repository.Create(ctx, appointment)
+	// Validar la existencia del dentista
+	_, err := s.dentistService.GetByID(ctx, appointment.DentistId)
+	if err != nil {
+		log.Println("[AppointmentsService][Create] error validating dentist existence", err)
+		return domain.AppointmentRequest{}, err
+	}
+	// Validar la existencia del paciente
+	_, err = s.patientService.GetByID(ctx, appointment.PatientId)
+	if err != nil {
+		log.Println("[AppointmentsService][Create] error validating patient existence", err)
+		return domain.AppointmentRequest{}, err
+	}
+	appointmentResult, err := s.repository.Create(ctx, appointment)
 	if err != nil {
 		log.Println("[AppointmentsService][Create] error creating appointment", err)
 		return domain.AppointmentRequest{}, err
 	} 
-    return appointment, nil;
+    return appointmentResult, nil;
 }
 
 // GetAll is a method that returns all appointment.

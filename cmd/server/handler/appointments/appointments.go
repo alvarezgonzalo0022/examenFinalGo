@@ -7,7 +7,9 @@ import (
 
 	// "github.com/alvarezgonzalo0022/examenFinalGo/internal/domain"
 	"github.com/alvarezgonzalo0022/examenFinalGo/internal/appointments"
+	"github.com/alvarezgonzalo0022/examenFinalGo/internal/dentists"
 	"github.com/alvarezgonzalo0022/examenFinalGo/internal/domain"
+	"github.com/alvarezgonzalo0022/examenFinalGo/internal/patients"
 
 	// "github.com/alvarezgonzalo0022/examenFinalGo/internal/domain"
 	"github.com/alvarezgonzalo0022/examenFinalGo/pkg/web"
@@ -15,12 +17,17 @@ import (
 )
 
 type Controller struct {
-	service appointments.ServiceAppointments
+	service 		appointments.ServiceAppointments
+	patientService 	patients.ServicePatients
+	dentistService 	dentists.ServiceDentists
 }
 
-func NewControllerAppointment(service appointments.ServiceAppointments) *Controller {
+func NewControllerAppointment(service appointments.ServiceAppointments, patientService patients.ServicePatients,
+    dentistService dentists.ServiceDentists,) *Controller {
 	return &Controller{
 		service: service,
+		patientService: patientService,
+		dentistService: dentistService,
 	}
 }
 
@@ -30,12 +37,26 @@ func (c *Controller) HandlerCreate() gin.HandlerFunc {
 		var request domain.AppointmentRequest
 
 		err := ctx.Bind(&request)
-
 		if err != nil {
 			log.Println("Error binding request:", err)
 			web.Error(ctx, http.StatusBadRequest, "%s", "bad request")
 			return
 		}
+
+		_, err = c.dentistService.GetByID(ctx, request.DentistId)
+        if err != nil {
+            log.Println("Error getting dentist:", err)
+            web.Error(ctx, http.StatusBadRequest, "%s", "invalid dentist")
+            return
+        }
+
+        // Validar la existencia del paciente
+        _, err = c.patientService.GetByID(ctx, request.PatientId)
+        if err != nil {
+            log.Println("Error getting patient:", err)
+            web.Error(ctx, http.StatusBadRequest, "%s", "invalid patient")
+            return
+        }
 
 		appointment, err := c.service.Create(ctx, request)
 		if err != nil {

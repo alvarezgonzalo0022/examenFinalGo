@@ -9,7 +9,9 @@ import (
 
 	// "time"
 
+	"github.com/alvarezgonzalo0022/examenFinalGo/internal/dentists"
 	"github.com/alvarezgonzalo0022/examenFinalGo/internal/domain"
+	"github.com/alvarezgonzalo0022/examenFinalGo/internal/patients"
 	// "github.com/alvarezgonzalo0022/examenFinalGo/internal/appointments"
 	// "github.com/alvarezgonzalo0022/examenFinalGo/pkg/web"
 )
@@ -24,13 +26,34 @@ var (
 
 type repositoryappointmentmysql struct {
 	db *sql.DB
+	dentistService	dentists.ServiceDentists
+	patientService	patients.ServicePatients
 }
 
-func NewMySqlRepository(db *sql.DB) RepositoryAppointments {
-	return &repositoryappointmentmysql{db: db}
+func NewMySqlRepository(db *sql.DB, dentistService dentists.ServiceDentists,
+	patientService	patients.ServicePatients) RepositoryAppointments {
+	return &repositoryappointmentmysql{
+		db: 		db,
+		dentistService: dentistService,
+		patientService: patientService,
+	}
 }
 
 func (r *repositoryappointmentmysql) Create(ctx context.Context, appointment domain.AppointmentRequest) (domain.AppointmentRequest, error) {
+	// Validar la existencia del dentista
+	_, err := r.dentistService.GetByID(ctx, appointment.DentistId)
+	if err != nil {
+		log.Println("Error getting dentist:", err)
+		return domain.AppointmentRequest{}, errors.New("invalid dentist")
+	}
+
+	// Validar la existencia del paciente
+	_, err = r.patientService.GetByID(ctx, appointment.PatientId)
+	if err != nil {
+		log.Println("Error getting patient:", err)
+		return domain.AppointmentRequest{}, errors.New("invalid patient")
+	}
+
 	statement, err := r.db.Prepare(QueryInsertAppointment)
 	if err != nil {
 		return domain.AppointmentRequest{}, ErrPrepareStatement
