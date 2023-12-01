@@ -80,7 +80,18 @@ func (s *service) GetByID(ctx context.Context, id int) (domain.AppointmentRespon
 
 // Update is a method that updates a appointment by ID.
 func (s *service) Update(ctx context.Context, appointment domain.AppointmentRequest, id int) (domain.AppointmentRequest, error) {
-	appointment, err := s.repository.Update(ctx, appointment, id)
+	_, err := s.dentistService.GetByID(ctx, appointment.DentistId)
+	if err != nil {
+		log.Println("[AppointmentsService][Create] error validating dentist existence", err)
+		return domain.AppointmentRequest{}, err
+	}
+	// Validar la existencia del paciente
+	_, err = s.patientService.GetByID(ctx, appointment.PatientId)
+	if err != nil {
+		log.Println("[AppointmentsService][Create] error validating patient existence", err)
+		return domain.AppointmentRequest{}, err
+	}
+	appointment, err = s.repository.Update(ctx, appointment, id)
 	if err != nil {
 		log.Println("[AppointmentsService][Update] error updating appointment by ID", err)
 		return domain.AppointmentRequest{}, err
@@ -91,7 +102,13 @@ func (s *service) Update(ctx context.Context, appointment domain.AppointmentRequ
 
 // Delete is a method that deletes a appointment by ID.
 func (s *service) Delete(ctx context.Context, id int) error {
-	err := s.repository.Delete(ctx, id)
+	_, err := s.repository.GetByID(ctx, id)
+	if err != nil {
+		log.Println("[AppointmentsService][GetByID] error validating appointment existence", err)
+		return err
+	}
+
+	err = s.repository.Delete(ctx, id)
 	if err != nil {
 		log.Println("[AppointmentsService][Delete] error deleting appointment by ID", err)
 		return err

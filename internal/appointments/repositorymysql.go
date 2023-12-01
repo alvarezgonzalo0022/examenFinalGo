@@ -41,18 +41,18 @@ func NewMySqlRepository(db *sql.DB, dentistService dentists.ServiceDentists,
 
 func (r *repositoryappointmentmysql) Create(ctx context.Context, appointment domain.AppointmentRequest) (domain.AppointmentRequest, error) {
 	// Validar la existencia del dentista
-	_, err := r.dentistService.GetByID(ctx, appointment.DentistId)
-	if err != nil {
-		log.Println("Error getting dentist:", err)
-		return domain.AppointmentRequest{}, errors.New("invalid dentist")
-	}
+	// _, err := r.dentistService.GetByID(ctx, appointment.DentistId)
+	// if err != nil {
+	// 	log.Println("Error getting dentist:", err)
+	// 	return domain.AppointmentRequest{}, errors.New("invalid dentist")
+	// }
 
-	// Validar la existencia del paciente
-	_, err = r.patientService.GetByID(ctx, appointment.PatientId)
-	if err != nil {
-		log.Println("Error getting patient:", err)
-		return domain.AppointmentRequest{}, errors.New("invalid patient")
-	}
+	// // Validar la existencia del paciente
+	// _, err = r.patientService.GetByID(ctx, appointment.PatientId)
+	// if err != nil {
+	// 	log.Println("Error getting patient:", err)
+	// 	return domain.AppointmentRequest{}, errors.New("invalid patient")
+	// }
 
 	statement, err := r.db.Prepare(QueryInsertAppointment)
 	if err != nil {
@@ -76,8 +76,6 @@ func (r *repositoryappointmentmysql) Create(ctx context.Context, appointment dom
     }
 	appointmentTime = time.Date(1, 1, 1, appointmentTime.Hour(), appointmentTime.Minute(), 0, 0, time.UTC)
 
-
-	log.Println("Executing SQL statement")
 	result, err := statement.Exec(
 		appointment.PatientId,
 		appointment.DentistId,
@@ -85,7 +83,6 @@ func (r *repositoryappointmentmysql) Create(ctx context.Context, appointment dom
 		appointmentTime,
 		appointment.Description,
 	)
-	log.Println("Executing SQL statement")
 
 	if err != nil {
 		log.Println("Error:", err)
@@ -103,8 +100,6 @@ func (r *repositoryappointmentmysql) Create(ctx context.Context, appointment dom
 }
 
 func (r *repositoryappointmentmysql) GetAll(ctx context.Context) ([]domain.AppointmentResponse, error) {
-   // query := `SELECT appointments.*, dentists.last_name AS dentist_lastname, patients.last_name AS patient_lastname FROM appointments INNER JOIN dentists ON appointments.dentist_id = dentists.id INNER JOIN patients ON appointments.patient_id = patients.id `
-
 
 	rows, err := r.db.Query(QueryGetAllAppointment)
     if err != nil {
@@ -184,12 +179,28 @@ func (r *repositoryappointmentmysql) Update(ctx context.Context, appointment dom
 
 	defer statement.Close()
 
+	appointmentDate, err := time.Parse("2006-01-02", appointment.AppointmentDate)
+    if err != nil {
+        log.Println("Error parsing appointment date:", err)
+        return domain.AppointmentRequest{}, domain.ErrInvalidDateFormat
+    }
+	appointmentDate = time.Date(appointmentDate.Year(), appointmentDate.Month(), appointmentDate.Day(), 0, 0, 0, 0, time.UTC)
+
+	appointmentTime, err := time.Parse("15:04", appointment.AppointmentTime)
+    if err != nil {
+        // Manejar el error según tus necesidades
+        log.Println("Error parsing appointment time:", err)
+        return domain.AppointmentRequest{}, domain.ErrInvalidTimeFormat
+    }
+	appointmentTime = time.Date(1, 1, 1, appointmentTime.Hour(), appointmentTime.Minute(), 0, 0, time.UTC)
+
 	result, err := statement.Exec(
 		appointment.DentistId,
 		appointment.PatientId,
-		appointment.AppointmentDate,
-		appointment.AppointmentTime,
+		appointmentDate,
+		appointmentTime,
 		appointment.Description,
+		id,
 	)
 
 	if err != nil {
