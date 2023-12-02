@@ -173,7 +173,7 @@ func (c *Controller) HandlerDelete() gin.HandlerFunc {
 /* --------------------------------- DELETE ------------------------------- */
 // Appointment godoc
 // @Summary appointment example
-// @Description Delete appointment by id
+// @Description Patch appointment by id
 // @Tags appointment
 // @Param id path int true "id del appointment"
 // @Accept json
