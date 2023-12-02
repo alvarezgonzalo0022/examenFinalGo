@@ -102,7 +102,7 @@ func (r *router) buildAppointmentRoutes() {
 		groupAppointments.GET("/:id", appointmentController.HandlerGetByID())
 		groupAppointments.PUT("/:id", middleware.Authenticate(), appointmentController.HandlerUpdate())
 		groupAppointments.DELETE("/:id", middleware.Authenticate(), appointmentController.HandlerDelete())
-		// groupAppointments.PATCH("/:id", middleware.Authenticate(), controller.HandlerPatch())
+		groupAppointments.PATCH("/:id", middleware.Authenticate(), appointmentController.HandlerPatch())
 	}
 }
 
@@ -111,5 +111,4 @@ func (r *router) buildPingRoutes() {
 	// Create a new ping controller.
 	pingController := ping.NewControllerPing()
 	r.routerGroup.GET("/ping", pingController.HandlerPing())
-
 }

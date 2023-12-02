@@ -6,9 +6,6 @@ import (
 	"errors"
 	"log"
 	"time"
-
-	// "time"
-
 	"github.com/alvarezgonzalo0022/examenFinalGo/internal/dentists"
 	"github.com/alvarezgonzalo0022/examenFinalGo/internal/domain"
 	"github.com/alvarezgonzalo0022/examenFinalGo/internal/patients"
@@ -21,7 +18,7 @@ var (
 	ErrExecStatement    = errors.New("error exec statement")
 	ErrLastInsertedId   = errors.New("error last inserted id")
 	ErrEmpty            = errors.New("empty list")
-	ErrNotFound         = errors.New("paciente not found")
+	ErrNotFound         = errors.New("appointment not found")
 )
 
 type repositoryappointmentmysql struct {

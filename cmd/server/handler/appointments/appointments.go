@@ -43,21 +43,6 @@ func (c *Controller) HandlerCreate() gin.HandlerFunc {
 			return
 		}
 
-		_, err = c.dentistService.GetByID(ctx, request.DentistId)
-        if err != nil {
-            log.Println("Error getting dentist:", err)
-            web.Error(ctx, http.StatusBadRequest, "%s", "invalid dentist")
-            return
-        }
-
-        // Validar la existencia del paciente
-        _, err = c.patientService.GetByID(ctx, request.PatientId)
-        if err != nil {
-            log.Println("Error getting patient:", err)
-            web.Error(ctx, http.StatusBadRequest, "%s", "invalid patient")
-            return
-        }
-
 		appointment, err := c.service.Create(ctx, request)
 		if err != nil {
 			web.Error(ctx, http.StatusInternalServerError, "%s", "internal server error")
@@ -182,5 +167,49 @@ func (c *Controller) HandlerDelete() gin.HandlerFunc {
 		web.Success(ctx, http.StatusOK, gin.H{
 			"mensaje": "deleted appointment",
 		})
+	}
+}
+
+/* --------------------------------- DELETE ------------------------------- */
+// Appointment godoc
+// @Summary appointment example
+// @Description Delete appointment by id
+// @Tags appointment
+// @Param id path int true "id del appointment"
+// @Accept json
+// @Produce json
+// @Success 200 {object} web.response
+// @Failure 400 {object} web.errorResponse
+// @Failure 500 {object} web.errorResponse
+// @Router /appointment/:id [patch]
+func (c *Controller) HandlerPatch() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+
+		var request domain.AppointmentRequest
+
+		errBind := ctx.Bind(&request)
+
+		if errBind != nil {
+			web.Error(ctx, http.StatusBadRequest, "%s", "bad request binding")
+			return
+		}
+
+		id := ctx.Param("id")
+
+		idInt, err := strconv.Atoi(id)
+
+		if err != nil {
+			web.Error(ctx, http.StatusBadRequest, "%s", "bad request param")
+			return
+		}
+
+		appointment, err := c.service.Patch(ctx, request, idInt)
+		if err != nil {
+			web.Error(ctx, http.StatusInternalServerError, "%s", "internal server error")
+			return
+		}
+
+		web.Success(ctx, http.StatusOK, appointment)
+
 	}
 }
