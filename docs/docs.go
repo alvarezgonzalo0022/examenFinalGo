@@ -40,10 +40,12 @@ const docTemplate = `{
                 }],
                 "responses": {
                     "200": {
-                        "description": "Appointment successfully deleted"
+                        "description": "Appointment successfully deleted",
+                        "schema": { "$ref": "#/definitions/response" }
                     },
                     "404": {
-                        "description": "Appointment not found"
+                        "description": "Appointment not found",
+                        "schema": { "$ref": "#/definitions/errorResponse" }
                     }
                 }
             },
@@ -62,13 +64,42 @@ const docTemplate = `{
                 }],
                 "responses": {
                     "200": {
-                        "description": "Appointment successfully updated"
+                        "description": "Appointment successfully updated",
+                        "schema": { "$ref": "#/definitions/response" }
                     },
                     "400": {
-                        "description": "Invalid request format"
+                        "description": "Invalid request format",
+                        "schema": { "$ref": "#/definitions/errorResponse" }
                     },
                     "404": {
-                        "description": "Appointment not found"
+                        "description": "Appointment not found",
+                        "schema": { "$ref": "#/definitions/errorResponse" }
+                    }
+                }
+            }
+        },
+        "/appointments/{id}": {
+            "get": {
+                "description": "Get appointment by id",
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
+                "tags": ["appointment"],
+                "summary": "Retrieve an appointment",
+                "parameters": [{
+                    "type": "integer",
+                    "description": "ID of the appointment",
+                    "name": "id",
+                    "in": "path",
+                    "required": true
+                }],
+                "responses": {
+                    "200": {
+                        "description": "Appointment details retrieved",
+                        "schema": { "$ref": "#/definitions/response" }
+                    },
+                    "404": {
+                        "description": "Appointment not found",
+                        "schema": { "$ref": "#/definitions/errorResponse" }
                     }
                 }
             }
@@ -82,7 +113,8 @@ const docTemplate = `{
                 "summary": "Retrieve all dentists",
                 "responses": {
                     "200": {
-                        "description": "List of dentists"
+                        "description": "List of dentists",
+                        "schema": { "$ref": "#/definitions/response" }
                     }
                 }
             },
@@ -94,10 +126,90 @@ const docTemplate = `{
                 "summary": "Create a dentist",
                 "responses": {
                     "201": {
-                        "description": "Dentist created successfully"
+                        "description": "Dentist created successfully",
+                        "schema": { "$ref": "#/definitions/response" }
                     },
                     "400": {
-                        "description": "Invalid input data"
+                        "description": "Invalid input data",
+                        "schema": { "$ref": "#/definitions/errorResponse" }
+                    }
+                }
+            }
+        },
+        "/dentists/{id}": {
+            "get": {
+                "description": "Get dentist by id",
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
+                "tags": ["dentist"],
+                "summary": "Retrieve a dentist",
+                "parameters": [{
+                    "type": "integer",
+                    "description": "ID of the dentist",
+                    "name": "id",
+                    "in": "path",
+                    "required": true
+                }],
+                "responses": {
+                    "200": {
+                        "description": "Dentist details retrieved",
+                        "schema": { "$ref": "#/definitions/response" }
+                    },
+                    "404": {
+                        "description": "Dentist not found",
+                        "schema": { "$ref": "#/definitions/errorResponse" }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update dentist by id",
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
+                "tags": ["dentist"],
+                "summary": "Update a dentist",
+                "parameters": [{
+                    "type": "integer",
+                    "description": "ID of the dentist",
+                    "name": "id",
+                    "in": "path",
+                    "required": true
+                }],
+                "responses": {
+                    "200": {
+                        "description": "Dentist successfully updated",
+                        "schema": { "$ref": "#/definitions/response" }
+                    },
+                    "400": {
+                        "description": "Invalid request format",
+                        "schema": { "$ref": "#/definitions/errorResponse" }
+                    },
+                    "404": {
+                        "description": "Dentist not found",
+                        "schema": { "$ref": "#/definitions/errorResponse" }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete dentist by id",
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
+                "tags": ["dentist"],
+                "summary": "Delete a dentist",
+                "parameters": [{
+                    "type": "integer",
+                    "description": "ID of the dentist",
+                    "name": "id",
+                    "in": "path",
+                    "required": true
+                }],
+                "responses": {
+                    "200": {
+                        "description": "Dentist successfully deleted",
+                        "schema": { "$ref": "#/definitions/response" }
+                    },
+                    "404": {
+                        "description": "Dentist not found",
+                        "schema": { "$ref": "#/definitions/errorResponse" }
                     }
                 }
             }
@@ -111,7 +223,8 @@ const docTemplate = `{
                 "summary": "Retrieve all patients",
                 "responses": {
                     "200": {
-                        "description": "List of patients"
+                        "description": "List of patients",
+                        "schema": { "$ref": "#/definitions/response" }
                     }
                 }
             },
@@ -123,15 +236,94 @@ const docTemplate = `{
                 "summary": "Create a patient",
                 "responses": {
                     "201": {
-                        "description": "Patient created successfully"
+                        "description": "Patient created successfully",
+                        "schema": { "$ref": "#/definitions/response" }
                     },
                     "400": {
-                        "description": "Invalid input data"
+                        "description": "Invalid input data",
+                        "schema": { "$ref": "#/definitions/errorResponse" }
+                    }
+                }
+            },
+            "/patients/{id}": {
+                "get": {
+                    "description": "Get patient by id",
+                    "consumes": ["application/json"],
+                    "produces": ["application/json"],
+                    "tags": ["patient"],
+                    "summary": "Retrieve a patient",
+                    "parameters": [{
+                        "type": "integer",
+                        "description": "ID of the patient",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }],
+                    "responses": {
+                        "200": {
+                            "description": "Patient details retrieved",
+                            "schema": { "$ref": "#/definitions/response" }
+                        },
+                        "404": {
+                            "description": "Patient not found",
+                            "schema": { "$ref": "#/definitions/errorResponse" }
+                        }
+                    }
+                },
+                "put": {
+                    "description": "Update patient by id",
+                    "consumes": ["application/json"],
+                    "produces": ["application/json"],
+                    "tags": ["patient"],
+                    "summary": "Update a patient",
+                    "parameters": [{
+                        "type": "integer",
+                        "description": "ID of the patient",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }],
+                    "responses": {
+                        "200": {
+                            "description": "Patient successfully updated",
+                            "schema": { "$ref": "#/definitions/response" }
+                        },
+                        "400": {
+                            "description": "Invalid request format",
+                            "schema": { "$ref": "#/definitions/errorResponse" }
+                        },
+                        "404": {
+                            "description": "Patient not found",
+                            "schema": { "$ref": "#/definitions/errorResponse" }
+                        }
+                    }
+                },
+                "delete": {
+                    "description": "Delete patient by id",
+                    "consumes": ["application/json"],
+                    "produces": ["application/json"],
+                    "tags": ["patient"],
+                    "summary": "Delete a patient",
+                    "parameters": [{
+                        "type": "integer",
+                        "description": "ID of the patient",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }],
+                    "responses": {
+                        "200": {
+                            "description": "Patient successfully deleted",
+                            "schema": { "$ref": "#/definitions/response" }
+                        },
+                        "404": {
+                            "description": "Patient not found",
+                            "schema": { "$ref": "#/definitions/errorResponse" }
+                        }
                     }
                 }
             }
-        },
-        // Add other paths here
+        }
     },
     "securityDefinitions": {
         "BasicAuth": {
@@ -141,6 +333,21 @@ const docTemplate = `{
     "externalDocs": {
         "description": "OpenAPI",
         "url": "https://swagger.io/resources/open-api/"
+    },
+    "definitions": {
+        "response": {
+            "type": "object",
+            "properties": {
+                "data": { "type": "object" }
+            }
+        },
+        "errorResponse": {
+            "type": "object",
+            "properties": {
+                "code": { "type": "string" },
+                "message": { "type": "string" }
+            }
+        }
     }
 }`
 
