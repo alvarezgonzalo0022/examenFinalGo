@@ -27,7 +27,7 @@ func NewControllerPatient(service patients.ServicePatients) *Controller {
 // @Tags patient
 // @Accept json
 // @Produce json
-// @Success 200 {object} web.response
+// @Success 200 {object} web.Response
 // @Failure 400 {object} web.errorResponse
 // @Failure 500 {object} web.errorResponse
 // @Router /patients [post]
@@ -60,7 +60,7 @@ func (c *Controller) HandlerCreate() gin.HandlerFunc {
 // @Tags patient
 // @Accept json
 // @Produce json
-// @Success 200 {object} web.response
+// @Success 200 {object} web.Response
 // @Failure 500 {object} web.errorResponse
 // @Router /patients [get]
 func (c *Controller) HandlerGetAll() gin.HandlerFunc {
@@ -83,7 +83,7 @@ func (c *Controller) HandlerGetAll() gin.HandlerFunc {
 // @Param id path int true "id del patient"
 // @Accept json
 // @Produce json
-// @Success 200 {object} web.response
+// @Success 200 {object} web.Response
 // @Failure 400 {object} web.errorResponse
 // @Failure 500 {object} web.errorResponse
 // @Router /patients/:id [get]
@@ -113,7 +113,7 @@ func (c *Controller) HandlerGetByID() gin.HandlerFunc {
 // @Tags patient
 // @Accept json
 // @Produce json
-// @Success 200 {object} web.response
+// @Success 200 {object} web.Response
 // @Failure 400 {object} web.errorResponse
 // @Failure 500 {object} web.errorResponse
 // @Router /patients/:id [put]
@@ -156,7 +156,7 @@ func (c *Controller) HandlerUpdate() gin.HandlerFunc {
 // @Param id path int true "id del patient"
 // @Accept json
 // @Produce json
-// @Success 200 {object} web.response
+// @Success 200 {object} web.Response
 // @Failure 400 {object} web.errorResponse
 // @Failure 500 {object} web.errorResponse
 // @Router /patients/:id [delete]
@@ -187,7 +187,7 @@ func (c *Controller) HandlerDelete() gin.HandlerFunc {
 // @Param id path int true "id del patient"
 // @Accept json
 // @Produce json
-// @Success 200 {object} web.response
+// @Success 200 {object} web.Response
 // @Failure 400 {object} web.errorResponse
 // @Failure 500 {object} web.errorResponse
 // @Router /patients/:id [patch]

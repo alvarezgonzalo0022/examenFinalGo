@@ -11,5 +11,5 @@ type RepositoryAppointments interface {
 	GetByID(ctx context.Context, id int) (domain.AppointmentResponse, error)
 	Update(ctx context.Context, appointment domain.AppointmentRequest, id int) (domain.AppointmentRequest, error)
 	Delete(ctx context.Context, id int) error
-	Patch(ctx context.Context, appointment domain.AppointmentRequest, id int) (domain.AppointmentRequest, error)
+	Patch(ctx context.Context, appointment domain.AppointmentPatchRequest, id int) (domain.AppointmentPatchRequest, error)
 }

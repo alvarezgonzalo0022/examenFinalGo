@@ -5,7 +5,9 @@ import (
 	"database/sql"
 	"errors"
 	"log"
+	"strings"
 	"time"
+
 	"github.com/alvarezgonzalo0022/examenFinalGo/internal/dentists"
 	"github.com/alvarezgonzalo0022/examenFinalGo/internal/domain"
 	"github.com/alvarezgonzalo0022/examenFinalGo/internal/patients"
@@ -37,20 +39,6 @@ func NewMySqlRepository(db *sql.DB, dentistService dentists.ServiceDentists,
 }
 
 func (r *repositoryappointmentmysql) Create(ctx context.Context, appointment domain.AppointmentRequest) (domain.AppointmentRequest, error) {
-	// Validar la existencia del dentista
-	// _, err := r.dentistService.GetByID(ctx, appointment.DentistId)
-	// if err != nil {
-	// 	log.Println("Error getting dentist:", err)
-	// 	return domain.AppointmentRequest{}, errors.New("invalid dentist")
-	// }
-
-	// // Validar la existencia del paciente
-	// _, err = r.patientService.GetByID(ctx, appointment.PatientId)
-	// if err != nil {
-	// 	log.Println("Error getting patient:", err)
-	// 	return domain.AppointmentRequest{}, errors.New("invalid patient")
-	// }
-
 	statement, err := r.db.Prepare(QueryInsertAppointment)
 	if err != nil {
 		return domain.AppointmentRequest{}, ErrPrepareStatement
@@ -65,19 +53,11 @@ func (r *repositoryappointmentmysql) Create(ctx context.Context, appointment dom
     }
 	appointmentDate = time.Date(appointmentDate.Year(), appointmentDate.Month(), appointmentDate.Day(), 0, 0, 0, 0, time.UTC)
 
-	appointmentTime, err := time.Parse("15:04", appointment.AppointmentTime)
-    if err != nil {
-        // Manejar el error según tus necesidades
-        log.Println("Error parsing appointment time:", err)
-        return domain.AppointmentRequest{}, domain.ErrInvalidTimeFormat
-    }
-	appointmentTime = time.Date(1, 1, 1, appointmentTime.Hour(), appointmentTime.Minute(), 0, 0, time.UTC)
-
 	result, err := statement.Exec(
 		appointment.PatientId,
 		appointment.DentistId,
 		appointmentDate,
-		appointmentTime,
+		appointment.AppointmentTime,
 		appointment.Description,
 	)
 
@@ -97,8 +77,7 @@ func (r *repositoryappointmentmysql) Create(ctx context.Context, appointment dom
 }
 
 func (r *repositoryappointmentmysql) GetAll(ctx context.Context) ([]domain.AppointmentResponse, error) {
-
-	rows, err := r.db.Query(QueryGetAllAppointment)
+    rows, err := r.db.Query(QueryGetAllAppointment)
     if err != nil {
         return nil, err
     }
@@ -108,42 +87,44 @@ func (r *repositoryappointmentmysql) GetAll(ctx context.Context) ([]domain.Appoi
 
     for rows.Next() {
         var appointment domain.AppointmentResponse
-        var appointmentTimeStr string  // Variable para almacenar la cadena de tiempo
-
-        err := rows.Scan(&appointment.Id, &appointment.IdDentist, &appointment.IdPatient,
-            &appointment.AppointmentDate, &appointmentTimeStr, &appointment.Description, &appointment.DentistLastName, &appointment.PatientLastName)
+        var appointmentDateStr, appointmentTimeStr string
+        err := rows.Scan(
+			&appointment.Id, 
+			&appointment.DentistId,
+			&appointment.PatientId,
+            &appointmentDateStr,
+			&appointmentTimeStr,
+			&appointment.Description,
+			&appointment.DentistLastName,
+			&appointment.PatientLastName)
         if err != nil {
             return nil, err
         }
 
-        // Convierte la cadena de tiempo a un objeto time.Time
-        appointment.AppointmentTime, err = time.Parse("15:04:05", appointmentTimeStr)
-        if err != nil {
-            return nil, err
-        }
+        appointment.AppointmentDate = appointmentDateStr
+        appointment.AppointmentTime = appointmentTimeStr
 
         appointments = append(appointments, appointment)
     }
 
     return appointments, nil
-
 }
 
 func (r *repositoryappointmentmysql) GetByID(ctx context.Context, id int) (domain.AppointmentResponse, error) {
     row := r.db.QueryRow(QueryGetByIdAppointment, id)
 
-    var appointment domain.AppointmentResponse
-    var appointmentTimeStr string 
-
+	
+	
+	var appointment domain.AppointmentResponse
     err := row.Scan(
         &appointment.Id,
-        &appointment.IdDentist,
-        &appointment.IdPatient,
+        &appointment.DentistId,
+        &appointment.PatientId,
         &appointment.AppointmentDate,
-        &appointmentTimeStr, 
+        &appointment.AppointmentTime,
         &appointment.Description,
-		&appointment.PatientLastName,
-		&appointment.DentistLastName,
+        &appointment.PatientLastName,
+        &appointment.DentistLastName,
     )
 
     if err != nil {
@@ -153,19 +134,16 @@ func (r *repositoryappointmentmysql) GetByID(ctx context.Context, id int) (domai
         return domain.AppointmentResponse{}, err
     }
 
+	// appointmentDate, err := time.Parse("2006-01-02", appointment.AppointmentDate)
+    // if err != nil {
+    //     log.Println("Error parsing appointment date:", err)
+    //     return domain.AppointmentResponse{}, domain.ErrInvalidDateFormat
+    // }
 
-    if appointmentTimeStr != "" {
-        parsedTime, err := time.Parse("15:04:05", appointmentTimeStr) 
-        if err != nil {
-            return domain.AppointmentResponse{}, err
-        }
-        appointment.AppointmentTime = parsedTime
-    }
+	appointment.AppointmentDate = strings.Split(appointment.AppointmentDate, "T")[0]
 
     return appointment, nil
 }
-
-
 
 
 func (r *repositoryappointmentmysql) Update(ctx context.Context, appointment domain.AppointmentRequest, id int) (domain.AppointmentRequest, error) {
@@ -176,12 +154,14 @@ func (r *repositoryappointmentmysql) Update(ctx context.Context, appointment dom
 
 	defer statement.Close()
 
-	appointmentDate, err := time.Parse("2006-01-02", appointment.AppointmentDate)
-    if err != nil {
-        log.Println("Error parsing appointment date:", err)
-        return domain.AppointmentRequest{}, domain.ErrInvalidDateFormat
-    }
-	appointmentDate = time.Date(appointmentDate.Year(), appointmentDate.Month(), appointmentDate.Day(), 0, 0, 0, 0, time.UTC)
+	// appointmentDate, err := time.Parse("2006-01-02", appointment.AppointmentDate)
+    // if err != nil {
+    //     log.Println("Error parsing appointment date:", err)
+    //     return domain.AppointmentRequest{}, domain.ErrInvalidDateFormat
+    // }
+	// appointmentDate = time.Date(appointmentDate.Year(), appointmentDate.Month(), appointmentDate.Day(), 0, 0, 0, 0, time.UTC)
+
+	appointment.AppointmentDate = strings.Split(appointment.AppointmentDate, "T")[0]
 
 	appointmentTime, err := time.Parse("15:04", appointment.AppointmentTime)
     if err != nil {
@@ -194,7 +174,7 @@ func (r *repositoryappointmentmysql) Update(ctx context.Context, appointment dom
 	result, err := statement.Exec(
 		appointment.DentistId,
 		appointment.PatientId,
-		appointmentDate,
+		appointment.AppointmentDate,
 		appointmentTime,
 		appointment.Description,
 		id,
@@ -234,14 +214,27 @@ func (r *repositoryappointmentmysql) Delete(ctx context.Context, id int) error {
 
 func (r *repositoryappointmentmysql) Patch(
 	ctx context.Context,
-	appointment domain.AppointmentRequest,
-	id int) (domain.AppointmentRequest, error) {
+	appointment domain.AppointmentPatchRequest,
+	id int) (domain.AppointmentPatchRequest, error) {
 	statement, err := r.db.Prepare(QueryUpdateAppointment)
 	if err != nil {
-		return domain.AppointmentRequest{}, err
+		return domain.AppointmentPatchRequest{}, err
 	}
-
 	defer statement.Close()
+
+	// var appointmentDate time.Time
+	if appointment.AppointmentDate != "" {
+	// appointmentDate, err := time.Parse("2006-01-02", appointment.AppointmentDate)
+	// if err != nil {
+	// 	log.Println("Error parsing appointment date:", err)
+	// 	return domain.AppointmentPatchRequest{}, domain.ErrInvalidDateFormat
+	// 	}
+		// appointmentDate = time.Date(appointmentDate.Year(), appointmentDate.Month(), appointmentDate.Day(), 0, 0, 0, 0, time.UTC)
+		appointment.AppointmentDate = strings.Split(appointment.AppointmentDate, "T")[0]
+	}
+	
+
+
 
 	result, err := statement.Exec(
 		appointment.DentistId,
@@ -249,16 +242,25 @@ func (r *repositoryappointmentmysql) Patch(
 		appointment.AppointmentDate,
 		appointment.AppointmentTime,
 		appointment.Description,
+		id,
 	)
 
 	if err != nil {
-		return domain.AppointmentRequest{}, err
+		log.Println("Error updating appointment:", err)
+		return domain.AppointmentPatchRequest{}, err
 	}
 
-	_, err = result.RowsAffected()
+	rowsAffected, err := result.RowsAffected()
 	if err != nil {
-		return domain.AppointmentRequest{}, err
+		log.Println("Error getting rows affected:", err)
+		return domain.AppointmentPatchRequest{}, err
 	}
+
+	if rowsAffected == 0 {
+		return domain.AppointmentPatchRequest{}, sql.ErrNoRows
+	}
+
+	appointment.Id = id
 
 	return appointment, nil
 }

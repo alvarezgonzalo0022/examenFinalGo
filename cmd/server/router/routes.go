@@ -93,7 +93,7 @@ func (r *router) buildAppointmentRoutes() {
 	patientService := patients.NewServicePatients(patientRepository)
 	appointmentRepository := appointments.NewMySqlRepository(r.db, dentistService, patientService)
 	appointmentService := appointments.NewServiceAppointments(appointmentRepository, dentistService, patientService)
-	appointmentController := handlerAppointment.NewControllerAppointment(appointmentService, patientService, dentistService)
+	appointmentController := handlerAppointment.NewControllerAppointment(appointmentService)
 
 	groupAppointments := r.routerGroup.Group("/appointments")
 	{

@@ -3,6 +3,7 @@ package appointments
 import (
 	"context"
 	"log"
+	// "time"
 
 	"github.com/alvarezgonzalo0022/examenFinalGo/internal/dentists"
 	"github.com/alvarezgonzalo0022/examenFinalGo/internal/domain"
@@ -15,7 +16,7 @@ type ServiceAppointments interface {
 	GetByID(ctx context.Context, id int) (domain.AppointmentResponse, error)
 	Update(ctx context.Context, appointment domain.AppointmentRequest, id int) (domain.AppointmentRequest, error)
 	Delete(ctx context.Context, id int) error
-	Patch(ctx context.Context, appointment domain.AppointmentRequest, id int) (domain.AppointmentRequest, error)
+	Patch(ctx context.Context, appointment domain.AppointmentPatchRequest, id int) (domain.AppointmentPatchRequest, error)
 }
 
 type service struct {
@@ -117,57 +118,74 @@ func (s *service) Delete(ctx context.Context, id int) error {
 	return nil
 }
 
-// Patch is a method that updates a appointment by ID.
-func (s *service) Patch(ctx context.Context, appointment domain.AppointmentRequest, id int) (domain.AppointmentRequest, error) {
-	// ALGO ASI
-	// appointmentStore, err := s.repository.GetByID(ctx, id)
-	// if err != nil {
-	// 	log.Println("[AppointmentService][Patch] error getting appointment by ID", err)
-	// 	return domain.AppointmentRequest{}, err
-	// }
+// Patch is a method that updates an appointment by ID.
+func (s *service) Patch(ctx context.Context, appointment domain.AppointmentPatchRequest, id int) (domain.AppointmentPatchRequest, error) {
+    // Validar la existencia del dentista
+	if appointment.DentistId != 0 {
+		_, err := s.dentistService.GetByID(ctx, appointment.DentistId)
+		if err != nil {
+			log.Println("[Service][Patch] error validating dentist existence", err)
+			return domain.AppointmentPatchRequest{}, err
+		}
+    }
 
-	// appointmentPatch, err := s.validatePatch(appointmentStore, appointment)
-	// if err != nil {
-	// 	log.Println("[AppointmentService][Patch] error validating appointment", err)
-	// 	return domain.AppointmentRequest{}, err
-	// }
-	
-	appointment, err := s.repository.Patch(ctx, appointment, id)
-	if err != nil {
-		log.Println("[AppointmentsService][Patch] error patching appointment by ID", err)
-		return domain.AppointmentRequest{}, err
-	}
+    // Validar la existencia del paciente
+	if appointment.PatientId != 0 {
+		_, err := s.patientService.GetByID(ctx, appointment.PatientId)
+		if err != nil {
+			log.Println("[Service][Patch] error validating patient existence", err)
+			return domain.AppointmentPatchRequest{}, err
+		}
+    }
 
-	return appointment, nil
+    appointmentStore, err := s.repository.GetByID(ctx, id)
+    if err != nil {
+        log.Println("[AppointmentsService][Patch] error getting appointment by ID", err)
+        return domain.AppointmentPatchRequest{}, err
+    }
+
+    // Actualizar solo los campos proporcionados en la solicitud
+    appointment, err = s.validatePatch(appointmentStore, appointment)
+    if err != nil {
+        log.Println("[AppointmentsService][Patch] error validating appointment", err)
+		log.Println(appointment)
+        return domain.AppointmentPatchRequest{}, err
+    }
+
+    appointment, err = s.repository.Patch(ctx, appointment, id)
+    if err != nil {
+        log.Println("[AppointmentsService][Patch] error patching appointment by ID", err)
+        return domain.AppointmentPatchRequest{}, err
+    }
+
+    return appointment, nil
 }
 
-// hay que validar el patch utilizando esta funcion que devuelve un response que tiene turnoid, dentistid, patientid, 
-// fecha, hora, descripcion y que compara con el request que se manda por parametro en la funcion patch y no darle bola 
-//a dentistlastname y patientlastname IR A LINEA 82
-func (s *service) validatePatch(appointmentStore domain.AppointmentResponse, appointment domain.AppointmentResponse) (domain.AppointmentResponse, error) {
-	if appointmentStore.Id != appointment.Id {
-		return domain.AppointmentResponse{}, domain.ErrInvalidID
-	}
+// validatePatch actualiza los campos en appointment con los valores de appointmentStore si están presentes en la solicitud.
+func (s *service) validatePatch(appointmentStore domain.AppointmentResponse, appointment domain.AppointmentPatchRequest) (domain.AppointmentPatchRequest, error) {
+    // Comparar y actualizar cada campo si está presente en la solicitud
+    if appointment.AppointmentDate == "" && appointmentStore.AppointmentDate != "" {
+        appointment.AppointmentDate = appointmentStore.AppointmentDate
+    }
 
-	if appointmentStore.AppointmentDate != appointment.AppointmentDate {
-		appointmentStore.AppointmentDate = appointment.AppointmentDate
-	}
-	
-	if appointmentStore.AppointmentTime != appointment.AppointmentTime {
-		appointmentStore.AppointmentTime = appointment.AppointmentTime
-	}
+    if appointment.AppointmentTime == "" && appointmentStore.AppointmentTime != "" {
+        appointment.AppointmentTime = appointmentStore.AppointmentTime
+    }
 
-	if appointmentStore.IdPatient != appointment.IdPatient {
-		appointmentStore.IdPatient = appointment.IdPatient
-	}
+    if appointment.PatientId == 0 && appointmentStore.PatientId != 0 {
+        appointment.PatientId = appointmentStore.PatientId
+    }
 
-	if appointmentStore.IdDentist != appointment.IdDentist {
-		appointmentStore.IdDentist = appointment.IdDentist
-	}
+    if appointment.DentistId == 0 && appointmentStore.DentistId != 0 {
+        appointment.DentistId = appointmentStore.DentistId
+    }
 
-	if appointmentStore.Description != appointment.Description {
-		appointmentStore.Description = appointment.Description
-	}
+    if appointment.Description == "" && appointmentStore.Description != "" {
+        appointment.Description = appointmentStore.Description
+    }
 
-	return appointmentStore, nil
+    // Devolver la versión actualizada de appointment
+    return appointment, nil
 }
+
+

@@ -58,7 +58,7 @@ func (c *Controller) HandlerCreate() gin.HandlerFunc {
 // @Tags dentist
 // @Accept json
 // @Produce json
-// @Success 200 {object} 
+// @Success 200 {object} web.Response
 // @Failure 500 {object} web.errorResponse
 // @Router /dentists [get]
 func (c *Controller) HandlerGetAll() gin.HandlerFunc {
@@ -81,7 +81,7 @@ func (c *Controller) HandlerGetAll() gin.HandlerFunc {
 // @Param id path int true "id del dentist"
 // @Accept json
 // @Produce json
-// @Success 200 {object} 
+// @Success 200 {object} web.Response
 // @Failure 400 {object} web.errorResponse
 // @Failure 500 {object} web.errorResponse
 // @Router /dentists/:id [get]
@@ -109,7 +109,7 @@ func (c *Controller) HandlerGetByID() gin.HandlerFunc {
 // @Tags dentist
 // @Accept json
 // @Produce json
-// @Success 200 {object} 
+// @Success 200 {object} web.Response
 // @Failure 400 {object} web.errorResponse
 // @Failure 500 {object} web.errorResponse
 // @Router /dentists/:id [put]
@@ -152,7 +152,7 @@ func (c *Controller) HandlerUpdate() gin.HandlerFunc {
 // @Param id path int true "id del dentist"
 // @Accept json
 // @Produce json
-// @Success 200 {object} 
+// @Success 200 {object} web.Response
 // @Failure 400 {object} web.errorResponse
 // @Failure 500 {object} web.errorResponse
 // @Router /dentists/:id [delete]
@@ -183,7 +183,7 @@ func (c *Controller) HandlerDelete() gin.HandlerFunc {
 // @Param id path int true "id del dentist"
 // @Accept json
 // @Produce json
-// @Success 200 {object} 
+// @Success 200 {object} web.Response
 // @Failure 400 {object} web.errorResponse
 // @Failure 500 {object} web.errorResponse
 // @Router /dentists/:id [patch]
