@@ -4,31 +4,31 @@ import (
 	"net/http"
 	"strconv"
 	"github.com/alvarezgonzalo0022/examenFinalGo/internal/domain"
-	odontologos "github.com/alvarezgonzalo0022/examenFinalGo/internal/dentists"
+	dentists "github.com/alvarezgonzalo0022/examenFinalGo/internal/dentists"
 	"github.com/alvarezgonzalo0022/examenFinalGo/pkg/web"
 	"github.com/gin-gonic/gin"
 )
 
 type Controller struct {
-	service odontologos.ServiceDentists
+	service dentists.ServiceDentists
 }
 
-func NewControllerDentist(service odontologos.ServiceDentists) *Controller {
+func NewControllerDentist(service dentists.ServiceDentists) *Controller {
 	return &Controller{
 		service: service,
 	}
 }
 
-// Odontologo godoc
-// @Summary odontologo example
-// @Description Create a new odontologo
-// @Tags odontologo
+// Dentist godoc
+// @Summary dentist example
+// @Description Create a new dentist
+// @Tags dentist
 // @Accept json
 // @Produce json
 // @Success 200 {object} web.Response
 // @Failure 400 {object} web.errorResponse
 // @Failure 500 {object} web.errorResponse
-// @Router /odontologos [post]
+// @Router /dentists [post]
 func (c *Controller) HandlerCreate() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 
@@ -52,15 +52,15 @@ func (c *Controller) HandlerCreate() gin.HandlerFunc {
 	}
 }
 
-// Odontologo godoc
-// @Summary odontologo example
-// @Description Get all odontologos
-// @Tags odontologo
+// Dentist godoc
+// @Summary dentist example
+// @Description Get all dentists
+// @Tags dentist
 // @Accept json
 // @Produce json
 // @Success 200 {object} 
 // @Failure 500 {object} web.errorResponse
-// @Router /odontologos [get]
+// @Router /dentists [get]
 func (c *Controller) HandlerGetAll() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		dentists, err := c.service.GetAll(ctx)
@@ -74,17 +74,17 @@ func (c *Controller) HandlerGetAll() gin.HandlerFunc {
 	}
 }
 
-// Odontologo godoc
-// @Summary odontologo example
-// @Description Get odontologo by id
-// @Tags odontologo
-// @Param id path int true "id del odontologo"
+// Dentist godoc
+// @Summary dentist example
+// @Description Get dentist by id
+// @Tags dentist
+// @Param id path int true "id del dentist"
 // @Accept json
 // @Produce json
 // @Success 200 {object} 
 // @Failure 400 {object} web.errorResponse
 // @Failure 500 {object} web.errorResponse
-// @Router /odontologos/:id [get]
+// @Router /dentists/:id [get]
 func (c *Controller) HandlerGetByID() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		id, err := strconv.Atoi(ctx.Param("id"))
@@ -103,16 +103,16 @@ func (c *Controller) HandlerGetByID() gin.HandlerFunc {
 	}
 }
 
-// Odontologo godoc
-// @Summary odontologo example
-// @Description Update odontologo by id
-// @Tags odontologo
+// Dentist godoc
+// @Summary dentist example
+// @Description Update dentist by id
+// @Tags dentist
 // @Accept json
 // @Produce json
 // @Success 200 {object} 
 // @Failure 400 {object} web.errorResponse
 // @Failure 500 {object} web.errorResponse
-// @Router /odontologos/:id [put]
+// @Router /dentists/:id [put]
 func (c *Controller) HandlerUpdate() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 
@@ -145,17 +145,17 @@ func (c *Controller) HandlerUpdate() gin.HandlerFunc {
 	}
 }
 
-// Odontologo godoc
-// @Summary odontologo example
-// @Description Delete odontologo by id
-// @Tags odontologo
-// @Param id path int true "id del odontologo"
+// Dentist godoc
+// @Summary dentist example
+// @Description Delete dentist by id
+// @Tags dentist
+// @Param id path int true "id del dentist"
 // @Accept json
 // @Produce json
 // @Success 200 {object} 
 // @Failure 400 {object} web.errorResponse
 // @Failure 500 {object} web.errorResponse
-// @Router /odontologos/:id [delete]
+// @Router /dentists/:id [delete]
 func (c *Controller) HandlerDelete() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		id, err := strconv.Atoi(ctx.Param("id"))
@@ -176,17 +176,17 @@ func (c *Controller) HandlerDelete() gin.HandlerFunc {
 	}
 }
 
-// Odontologo godoc
-// @Summary odontologo example
-// @Description Patch odontologo
-// @Tags odontologo
-// @Param id path int true "id del odontologo"
+// Dentist godoc
+// @Summary dentist example
+// @Description Patch dentist
+// @Tags dentist
+// @Param id path int true "id del dentist"
 // @Accept json
 // @Produce json
 // @Success 200 {object} 
 // @Failure 400 {object} web.errorResponse
 // @Failure 500 {object} web.errorResponse
-// @Router /odontologos/:id [patch]
+// @Router /dentists/:id [patch]
 func (c *Controller) HandlerPatch() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		id, err := strconv.Atoi(ctx.Param("id"))

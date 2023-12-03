@@ -1,0 +1,266 @@
+swagger: "2.0"
+info:
+  description: This is a sample server celler server.
+  title: Swagger Example API
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: "1.0"
+host: localhost:8080
+basePath: /api/v1
+securityDefinitions:
+  BasicAuth:
+    type: basic
+paths:
+  /appointment/{id}:
+    delete:
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - appointment
+      summary: Delete an appointment
+      description: Delete appointment by id
+      parameters:
+        - name: id
+          in: path
+          description: ID of the appointment
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Appointment successfully deleted
+        404:
+          description: Appointment not found
+    patch:
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - appointment
+      summary: Update an appointment
+      description: Update appointment by id
+      parameters:
+        - name: id
+          in: path
+          description: ID of the appointment
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Appointment successfully updated
+        400:
+          description: Invalid request format
+        404:
+          description: Appointment not found
+  /appointments/{id}:
+    get:
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - appointment
+      summary: Retrieve an appointment
+      description: Get appointment by id
+      parameters:
+        - name: id
+          in: path
+          description: ID of the appointment
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Appointment details retrieved
+        404:
+          description: Appointment not found
+  /dentists:
+    get:
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - dentist
+      summary: Retrieve all dentists
+      description: Get all dentists
+      responses:
+        200:
+          description: List of dentists retrieved
+    post:
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - dentist
+      summary: Create a dentist
+      description: Create a new dentist
+      responses:
+        201:
+          description: Dentist created successfully
+        400:
+          description: Invalid input data
+  /dentists/{id}:
+    get:
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - dentist
+      summary: Retrieve a dentist
+      description: Get dentist by id
+      parameters:
+        - name: id
+          in: path
+          description: ID of the dentist
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Dentist details retrieved
+        404:
+          description: Dentist not found
+    put:
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - dentist
+      summary: Update an dentist
+      description: Update dentist by id
+      parameters:
+        - name: id
+          in: path
+          description: ID of the dentist
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Dentist successfully updated
+        400:
+          description: Invalid request format
+        404:
+          description: Dentist not found
+    delete:
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - dentist
+      summary: Delete an dentist
+      description: Delete dentist by id
+      parameters:
+        - name: id
+          in: path
+          description: ID of the dentist
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Dentist successfully deleted
+        404:
+          description: Dentist not found
+  /patients:
+    get:
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - patient
+      summary: Retrieve all patients
+      description: Get all patients
+      responses:
+        200:
+          description: List of patients retrieved
+    post:
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - patient
+      summary: Create a patient
+      description: Create a new patient
+      responses:
+        201:
+          description: Patient created successfully
+        400:
+          description: Invalid input data
+  /patients/{id}:
+    get:
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - patient
+      summary: Retrieve a patient
+      description: Get patient by id
+      parameters:
+        - name: id
+          in: path
+          description: ID of the patient
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Patient details retrieved
+        404:
+          description: Patient not found
+    put:
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - patient
+      summary: Update a patient
+      description: Update patient by id
+      parameters:
+        - name: id
+          in: path
+          description: ID of the patient
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Patient successfully updated
+        400:
+          description: Invalid request format
+        404:
+          description: Patient not found
+    delete:
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - patient
+      summary: Delete a patient
+      description: Delete patient by id
+      parameters:
+        - name: id
+          in: path
+          description: ID of the patient
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Patient successfully deleted
+        404:
+          description: Patient not found
+externalDocs:
+  description: OpenAPI
+  url: https://swagger.io/resources/open-api/
