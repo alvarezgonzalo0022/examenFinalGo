@@ -7,7 +7,7 @@ import (
 	"os"
 
 	routes "github.com/alvarezgonzalo0022/examenFinalGo/cmd/server/router"
-	// _ "github.com/alvarezgonzalo0022/examenFinalGo/docs"
+	_ "github.com/alvarezgonzalo0022/examenFinalGo/cmd/server/docs"
 	"github.com/alvarezgonzalo0022/examenFinalGo/pkg/middleware"
 	"github.com/alvarezgonzalo0022/examenFinalGo/pkg/store"
 	"github.com/gin-gonic/gin"
@@ -21,9 +21,9 @@ const (
 	puerto = "8080"
 )
 
-// @title Mi API
+// @title Dental Clinic Lisa Necesita Frenos
 // @version 1.0
-// @description Descripción de mi API
+// @description This is a sample dental clinic API for managing appointments, dentists, and patients.
 // @host localhost:8080
 // @BasePath /api/v1
 func main() {

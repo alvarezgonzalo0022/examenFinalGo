@@ -7,7 +7,7 @@ const docTemplate = `{
     "schemes": {{ marshal .Schemes }},
     "swagger": "2.0",
     "info": {
-        "description": "{{escape .Description}}",
+        "description": "{{.Description}}",
         "title": "{{.Title}}",
         "termsOfService": "http://swagger.io/terms/",
         "contact": {
@@ -24,7 +24,46 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/appointment/{id}": {
+        "/appointments": {
+            "get": {
+                "description": "Get all appointments",
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
+                "tags": ["appointment"],
+                "summary": "Retrieve all appointments",
+                "responses": {
+                    "200": {
+                        "description": "List of appointments",
+                        "schema": { "$ref": "#/definitions/response" }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new appointment",
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
+                "tags": ["appointment"],
+                "summary": "Create an appointment",
+                "parameters": [{
+                    "in": "body",
+                    "name": "body",
+                    "description": "Appointment object that needs to be added",
+                    "required": true,
+                    "schema": { "$ref": "#/definitions/appointment" }
+                }],
+                "responses": {
+                    "201": {
+                        "description": "Appointment created successfully",
+                        "schema": { "$ref": "#/definitions/response" }
+                    },
+                    "400": {
+                        "description": "Invalid input data",
+                        "schema": { "$ref": "#/definitions/errorResponse" }
+                    }
+                }
+            }
+        },
+        "/appointments/{id}": {
             "delete": {
                 "description": "Delete appointment by id",
                 "consumes": ["application/json"],
@@ -42,6 +81,40 @@ const docTemplate = `{
                     "200": {
                         "description": "Appointment successfully deleted",
                         "schema": { "$ref": "#/definitions/response" }
+                    },
+                    "404": {
+                        "description": "Appointment not found",
+                        "schema": { "$ref": "#/definitions/errorResponse" }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update appointment by id",
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
+                "tags": ["appointment"],
+                "summary": "Update an appointment",
+                "parameters": [{
+                    "type": "integer",
+                    "description": "ID of the appointment",
+                    "name": "id",
+                    "in": "path",
+                    "required": true
+                },{
+                    "in": "body",
+                    "name": "body",
+                    "description": "Updated appointment object",
+                    "required": true,
+                    "schema": { "$ref": "#/definitions/appointment" }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "Appointment successfully updated",
+                        "schema": { "$ref": "#/definitions/response" }
+                    },
+                    "400": {
+                        "description": "Invalid request format",
+                        "schema": { "$ref": "#/definitions/errorResponse" }
                     },
                     "404": {
                         "description": "Appointment not found",
@@ -76,9 +149,7 @@ const docTemplate = `{
                         "schema": { "$ref": "#/definitions/errorResponse" }
                     }
                 }
-            }
-        },
-        "/appointments/{id}": {
+            },
             "get": {
                 "description": "Get appointment by id",
                 "consumes": ["application/json"],
@@ -189,6 +260,34 @@ const docTemplate = `{
                     }
                 }
             },
+            "patch": {
+                "description": "Update dentist by id",
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
+                "tags": ["dentist"],
+                "summary": "Update a dentist",
+                "parameters": [{
+                    "type": "integer",
+                    "description": "ID of the dentist",
+                    "name": "id",
+                    "in": "path",
+                    "required": true
+                }],
+                "responses": {
+                    "200": {
+                        "description": "Dentist successfully updated",
+                        "schema": { "$ref": "#/definitions/response" }
+                    },
+                    "400": {
+                        "description": "Invalid request format",
+                        "schema": { "$ref": "#/definitions/errorResponse" }
+                    },
+                    "404": {
+                        "description": "Dentist not found",
+                        "schema": { "$ref": "#/definitions/errorResponse" }
+                    }
+                }
+            },
             "delete": {
                 "description": "Delete dentist by id",
                 "consumes": ["application/json"],
@@ -245,81 +344,121 @@ const docTemplate = `{
                     }
                 }
             },
-            "/patients/{id}": {
-                "get": {
-                    "description": "Get patient by id",
-                    "consumes": ["application/json"],
-                    "produces": ["application/json"],
-                    "tags": ["patient"],
-                    "summary": "Retrieve a patient",
-                    "parameters": [{
-                        "type": "integer",
-                        "description": "ID of the patient",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }],
-                    "responses": {
-                        "200": {
-                            "description": "Patient details retrieved",
-                            "schema": { "$ref": "#/definitions/response" }
-                        },
-                        "404": {
-                            "description": "Patient not found",
-                            "schema": { "$ref": "#/definitions/errorResponse" }
-                        }
+        },
+        "/patients/{id}": {
+            "get": {
+                "description": "Get patient by id",
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
+                "tags": ["patient"],
+                "summary": "Retrieve a patient",
+                "parameters": [{
+                    "type": "integer",
+                    "description": "ID of the patient",
+                    "name": "id",
+                    "in": "path",
+                    "required": true
+                }],
+                "responses": {
+                    "200": {
+                        "description": "Patient details retrieved",
+                        "schema": { "$ref": "#/definitions/response" }
+                    },
+                    "404": {
+                        "description": "Patient not found",
+                        "schema": { "$ref": "#/definitions/errorResponse" }
                     }
-                },
-                "put": {
-                    "description": "Update patient by id",
-                    "consumes": ["application/json"],
-                    "produces": ["application/json"],
-                    "tags": ["patient"],
-                    "summary": "Update a patient",
-                    "parameters": [{
-                        "type": "integer",
-                        "description": "ID of the patient",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }],
-                    "responses": {
-                        "200": {
-                            "description": "Patient successfully updated",
-                            "schema": { "$ref": "#/definitions/response" }
-                        },
-                        "400": {
-                            "description": "Invalid request format",
-                            "schema": { "$ref": "#/definitions/errorResponse" }
-                        },
-                        "404": {
-                            "description": "Patient not found",
-                            "schema": { "$ref": "#/definitions/errorResponse" }
-                        }
+                }
+            },
+            "put": {
+                "description": "Update patient by id",
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
+                "tags": ["patient"],
+                "summary": "Update a patient",
+                "parameters": [{
+                    "type": "integer",
+                    "description": "ID of the patient",
+                    "name": "id",
+                    "in": "path",
+                    "required": true
+                },{
+                    "in": "body",
+                    "name": "body",
+                    "description": "Updated patient object",
+                    "required": true,
+                    "schema": { "$ref": "#/definitions/patient" }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "Patient successfully updated",
+                        "schema": { "$ref": "#/definitions/response" }
+                    },
+                    "400": {
+                        "description": "Invalid request format",
+                        "schema": { "$ref": "#/definitions/errorResponse" }
+                    },
+                    "404": {
+                        "description": "Patient not found",
+                        "schema": { "$ref": "#/definitions/errorResponse" }
                     }
-                },
-                "delete": {
-                    "description": "Delete patient by id",
-                    "consumes": ["application/json"],
-                    "produces": ["application/json"],
-                    "tags": ["patient"],
-                    "summary": "Delete a patient",
-                    "parameters": [{
-                        "type": "integer",
-                        "description": "ID of the patient",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }],
-                    "responses": {
-                        "200": {
-                            "description": "Patient successfully deleted",
-                            "schema": { "$ref": "#/definitions/response" }
-                        },
-                        "404": {
-                            "description": "Patient not found",
-                            "schema": { "$ref": "#/definitions/errorResponse" }
-                        }
+                }
+            },
+            "patch": {
+                "description": "Partially update patient by id",
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
+                "tags": ["patient"],
+                "summary": "Partially update a patient",
+                "parameters": [{
+                    "type": "integer",
+                    "description": "ID of the patient",
+                    "name": "id",
+                    "in": "path",
+                    "required": true
+                },{
+                    "in": "body",
+                    "name": "body",
+                    "description": "Updated fields for the patient",
+                    "required": true,
+                    "schema": { "$ref": "#/definitions/patient" }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "Patient successfully partially updated",
+                        "schema": { "$ref": "#/definitions/response" }
+                    },
+                    "400": {
+                        "description": "Invalid request format",
+                        "schema": { "$ref": "#/definitions/errorResponse" }
+                    },
+                    "404": {
+                        "description": "Patient not found",
+                        "schema": { "$ref": "#/definitions/errorResponse" }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete patient by id",
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
+                "tags": ["patient"],
+                "summary": "Delete a patient",
+                "parameters": [{
+                    "type": "integer",
+                    "description": "ID of the patient",
+                    "name": "id",
+                    "in": "path",
+                    "required": true
+                }],
+                "responses": {
+                    "200": {
+                        "description": "Patient successfully deleted",
+                        "schema": { "$ref": "#/definitions/response" }
+                    },
+                    "404": {
+                        "description": "Patient not found",
+                        "schema": { "$ref": "#/definitions/errorResponse" }
                     }
                 }
             }
@@ -357,8 +496,8 @@ var SwaggerInfo = &swag.Spec{
     Host:             "localhost:8080",
     BasePath:         "/api/v1",
     Schemes:          []string{},
-    Title:            "Swagger Example API",
-    Description:      "This is a sample server celler server.",
+    Title:            "Dental Clinic Lisa Necesita Frenos",
+    Description:      "This is a sample dental clinic API for managing appointments, dentists, and patients.",
     InfoInstanceName: "swagger",
     SwaggerTemplate:  docTemplate,
     LeftDelim:        "{{",
