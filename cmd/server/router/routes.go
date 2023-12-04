@@ -2,11 +2,13 @@ package routes
 
 import (
 	"database/sql"
+	handlerAppointment "github.com/alvarezgonzalo0022/examenFinalGo/cmd/server/handler/appointments"
+	handlerDentist "github.com/alvarezgonzalo0022/examenFinalGo/cmd/server/handler/dentists"
+	handlerPatient "github.com/alvarezgonzalo0022/examenFinalGo/cmd/server/handler/patients"
 	"github.com/alvarezgonzalo0022/examenFinalGo/cmd/server/handler/ping"
-	handlerOdontologo "github.com/alvarezgonzalo0022/examenFinalGo/cmd/server/handler/odontologos"
-	handlerPaciente "github.com/alvarezgonzalo0022/examenFinalGo/cmd/server/handler/pacientes"
-	odontologo "github.com/alvarezgonzalo0022/examenFinalGo/internal/odontologos"
-	paciente "github.com/alvarezgonzalo0022/examenFinalGo/internal/pacientes"
+	appointments "github.com/alvarezgonzalo0022/examenFinalGo/internal/appointments"
+	dentists "github.com/alvarezgonzalo0022/examenFinalGo/internal/dentists"
+	patients "github.com/alvarezgonzalo0022/examenFinalGo/internal/patients"
 	"github.com/alvarezgonzalo0022/examenFinalGo/pkg/middleware"
 	"github.com/gin-gonic/gin"
 )
@@ -34,8 +36,9 @@ func NewRouter(engine *gin.Engine, db *sql.DB) Router {
 // MapRoutes maps all routes.
 func (r *router) MapRoutes() {
 	r.setGroup()
-	r.buildOdontologoRoutes()
-	r.buildPacienteRoutes()
+	r.buildDentistRoutes()
+	r.buildPatientRoutes()
+	r.buildAppointmentRoutes()
 	r.buildPingRoutes()
 }
 
@@ -45,41 +48,61 @@ func (r *router) setGroup() {
 }
 
 // buildOdontologoRoutes maps all routes for the odontologos domain.
-func (r *router) buildOdontologoRoutes() {
+func (r *router) buildDentistRoutes() {
 	// Create a new odontologos controller.
-	repository := odontologo.NewMySqlRepository(r.db)
-	service := odontologo.NewServiceOdontologo(repository)
-	controlador := handlerOdontologo.NewControladorOdontologo(service)
+	repository := dentists.NewMySqlRepository(r.db)
+	service := dentists.NewServiceDentist(repository)
+	controller := handlerDentist.NewControllerDentist(service)
 
-	grupoOdontologo := r.routerGroup.Group("/odontologos")
+	groupDentists := r.routerGroup.Group("/dentists")
 	{
-		grupoOdontologo.POST("", middleware.Authenticate(), controlador.HandlerCreate())
-		grupoOdontologo.GET("", middleware.Authenticate(), controlador.HandlerGetAll())
-		grupoOdontologo.GET("/:id", controlador.HandlerGetByID())
-		grupoOdontologo.PUT("/:id", middleware.Authenticate(), controlador.HandlerUpdate())
-		grupoOdontologo.DELETE("/:id", middleware.Authenticate(), controlador.HandlerDelete())
-		grupoOdontologo.PATCH("/:id", middleware.Authenticate(), controlador.HandlerPatch())
+		groupDentists.POST("", middleware.Authenticate(), controller.HandlerCreate())
+		groupDentists.GET("", controller.HandlerGetAll())
+		groupDentists.GET("/:id", controller.HandlerGetByID())
+		groupDentists.PUT("/:id", middleware.Authenticate(), controller.HandlerUpdate())
+		groupDentists.DELETE("/:id", middleware.Authenticate(), controller.HandlerDelete())
+		groupDentists.PATCH("/:id", middleware.Authenticate(), controller.HandlerPatch())
 	}
 
 }
 
-// buildPacienteRoutes maps all routes for the pacientes domain.
-func (r *router) buildPacienteRoutes() {
-	// Create a new pacientes controller.
-	repository := paciente.NewPacientesMySqlRepository(r.db)
-	service := paciente.NewServicePacientes(repository)
-	controlador := handlerPaciente.NewControladorPaciente(service)
+// build PatientRoutes maps all routes for the patients domain.
+func (r *router) buildPatientRoutes() {
+	// Create a new patients controller.
+	repository := patients.NewPatientsMySqlRepository(r.db)
+	service := patients.NewServicePatients(repository)
+	controller := handlerPatient.NewControllerPatient(service)
 
-	grupoPacientes := r.routerGroup.Group("/pacientes")
+	groupPatients := r.routerGroup.Group("/patients")
 	{
-		grupoPacientes.POST("", middleware.Authenticate(), controlador.HandlerCreate())
-		grupoPacientes.GET("", middleware.Authenticate(), controlador.HandlerGetAll())
-		grupoPacientes.GET("/:id", controlador.HandlerGetByID())
-		grupoPacientes.PUT("/:id", middleware.Authenticate(), controlador.HandlerUpdate())
-		grupoPacientes.DELETE("/:id", middleware.Authenticate(), controlador.HandlerDelete())
-		grupoPacientes.PATCH("/:id", middleware.Authenticate(), controlador.HandlerPatch())
+		groupPatients.POST("", middleware.Authenticate(), controller.HandlerCreate())
+		groupPatients.GET("", controller.HandlerGetAll())
+		groupPatients.GET("/:id", controller.HandlerGetByID())
+		groupPatients.PUT("/:id", middleware.Authenticate(), controller.HandlerUpdate())
+		groupPatients.DELETE("/:id", middleware.Authenticate(), controller.HandlerDelete())
+		groupPatients.PATCH("/:id", middleware.Authenticate(), controller.HandlerPatch())
 	}
+}
 
+func (r *router) buildAppointmentRoutes() {
+	// Create a new patients controller.
+	dentistRepository := dentists.NewMySqlRepository(r.db)
+	dentistService := dentists.NewServiceDentist(dentistRepository)
+	patientRepository := patients.NewPatientsMySqlRepository(r.db)
+	patientService := patients.NewServicePatients(patientRepository)
+	appointmentRepository := appointments.NewMySqlRepository(r.db, dentistService, patientService)
+	appointmentService := appointments.NewServiceAppointments(appointmentRepository, dentistService, patientService)
+	appointmentController := handlerAppointment.NewControllerAppointment(appointmentService)
+
+	groupAppointments := r.routerGroup.Group("/appointments")
+	{
+		groupAppointments.POST("", middleware.Authenticate(), appointmentController.HandlerCreate())
+		groupAppointments.GET("", appointmentController.HandlerGetAll())
+		groupAppointments.GET("/:id", appointmentController.HandlerGetByID())
+		groupAppointments.PUT("/:id", middleware.Authenticate(), appointmentController.HandlerUpdate())
+		groupAppointments.DELETE("/:id", middleware.Authenticate(), appointmentController.HandlerDelete())
+		groupAppointments.PATCH("/:id", middleware.Authenticate(), appointmentController.HandlerPatch())
+	}
 }
 
 // buildPingRoutes maps all routes for the ping domain.
@@ -87,5 +110,4 @@ func (r *router) buildPingRoutes() {
 	// Create a new ping controller.
 	pingController := ping.NewControllerPing()
 	r.routerGroup.GET("/ping", pingController.HandlerPing())
-
 }

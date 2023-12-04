@@ -14,7 +14,7 @@ Este proyecto se centra en el desarrollo de una API para la gestión de reservas
 
 ## Requerimientos Técnicos
 - Diseño orientado a paquetes con distintas capas (entidades de negocio, acceso a datos, base de datos, service, handler).
-- Utilización de bases de datos relacionales o no relacionales como H2, MySQL o MongoDB.
+- Utilización de bases de datos relacionales como H2, MySQL.
 
 ## Equipo de Desarrollo
 - **Gonzalo Alvarez**

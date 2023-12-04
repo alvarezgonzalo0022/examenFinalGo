@@ -1,38 +1,39 @@
-package pacientes
+package patients
 
 import (
+	"log"
 	"net/http"
 	"strconv"
 	"github.com/alvarezgonzalo0022/examenFinalGo/internal/domain"
-	pacientes "github.com/alvarezgonzalo0022/examenFinalGo/internal/pacientes"
+	patients "github.com/alvarezgonzalo0022/examenFinalGo/internal/patients"
 	"github.com/alvarezgonzalo0022/examenFinalGo/pkg/web"
 	"github.com/gin-gonic/gin"
 )
 
-type Controlador struct {
-	service pacientes.ServicePacientes
+type Controller struct {
+	service patients.ServicePatients
 }
 
-func NewControladorPaciente(service pacientes.ServicePacientes) *Controlador {
-	return &Controlador{
+func NewControllerPatient(service patients.ServicePatients) *Controller {
+	return &Controller{
 		service: service,
 	}
 }
 
-// Paciente godoc
-// @Summary paciente example
-// @Description Create a new paciente
-// @Tags paciente
+// Patient godoc
+// @Summary patient example
+// @Description Create a new patient
+// @Tags patient
 // @Accept json
 // @Produce json
-// @Success 200 {object} web.response
+// @Success 200 {object} web.Response
 // @Failure 400 {object} web.errorResponse
 // @Failure 500 {object} web.errorResponse
-// @Router /pacientes [post]
-func (c *Controlador) HandlerCreate() gin.HandlerFunc {
+// @Router /patients [post]
+func (c *Controller) HandlerCreate() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 
-		var request domain.Paciente
+		var request domain.Patient
 
 		err := ctx.Bind(&request)
 
@@ -41,88 +42,84 @@ func (c *Controlador) HandlerCreate() gin.HandlerFunc {
 			return
 		}
 
-		paciente, err := c.service.Create(ctx, request)
+		patient, err := c.service.Create(ctx, request)
 		if err != nil {
 			web.Error(ctx, http.StatusInternalServerError, "%s", "internal server error")
 			return
 		}
 
-		web.Success(ctx, http.StatusOK, gin.H{
-			"data": paciente,
-		})
+		web.Success(ctx, http.StatusOK, patient)
 
 	}
 }
 
-// Paciente godoc
-// @Summary paciente example
-// @Description Get all pacientes
-// @Tags paciente
+// Patient godoc
+// @Summary patient example
+// @Description Get all patients
+// @Tags patient
 // @Accept json
 // @Produce json
-// @Success 200 {object} web.response
+// @Success 200 {object} web.Response
 // @Failure 500 {object} web.errorResponse
-// @Router /pacientes [get]
-func (c *Controlador) HandlerGetAll() gin.HandlerFunc {
+// @Router /patients [get]
+func (c *Controller) HandlerGetAll() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		pacientes, err := c.service.GetAll(ctx)
+		patients, err := c.service.GetAll(ctx)
 
 		if err != nil {
 			web.Error(ctx, http.StatusInternalServerError, "%s", "internal server error")
 			return
 		}
 
-		web.Success(ctx, http.StatusOK, gin.H{
-			"data": pacientes,
-		})
+		web.Success(ctx, http.StatusOK, patients)
 	}
 }
 
-// Paciente godoc
-// @Summary paciente example
-// @Description Get paciente by id
-// @Tags paciente
-// @Param id path int true "id del paciente"
+// Patient godoc
+// @Summary patient example
+// @Description Get patient by id
+// @Tags patient
+// @Param id path int true "id del patient"
 // @Accept json
 // @Produce json
-// @Success 200 {object} web.response
+// @Success 200 {object} web.Response
 // @Failure 400 {object} web.errorResponse
 // @Failure 500 {object} web.errorResponse
-// @Router /pacientes/:id [get]
-func (c *Controlador) HandlerGetByID() gin.HandlerFunc {
+// @Router /patients/:id [get]
+func (c *Controller) HandlerGetByID() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		id, err := strconv.Atoi(ctx.Param("id"))
 		if err != nil {
-			web.Error(ctx, http.StatusBadRequest, "%s", "id invalido")
+			log.Printf("Error al convertir ID: %v", err)
+			web.Error(ctx, http.StatusBadRequest, "%s", "invalid id")
 			return
 		}
 
-		paciente, err := c.service.GetByID(ctx, id)
+		patient, err := c.service.GetByID(ctx, id)
 		if err != nil {
+			log.Printf("Error al obtener patient por ID: %v", err)
 			web.Error(ctx, http.StatusInternalServerError, "%s", "internal server error")
 			return
 		}
 
-		web.Success(ctx, http.StatusOK, gin.H{
-			"data": paciente,
-		})
+		web.Success(ctx, http.StatusOK, patient)
 	}
 }
 
-// Paciente godoc
-// @Summary paciente example
-// @Description Update paciente by id
-// @Tags paciente
+// Patient godoc
+// @Summary patient example
+// @Description Update patient by id
+// @Tags patient
 // @Accept json
 // @Produce json
-// @Success 200 {object} web.response
+// @Success 200 {object} web.Response
 // @Failure 400 {object} web.errorResponse
 // @Failure 500 {object} web.errorResponse
-// @Router /pacientes/:id [put]
-func (c *Controlador) HandlerUpdate() gin.HandlerFunc {
+// @Router /patients/:id [put]
+func (c *Controller) HandlerUpdate() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 
-		var request domain.Paciente
+		var request domain.Patient
 
 		errBind := ctx.Bind(&request)
 
@@ -140,35 +137,33 @@ func (c *Controlador) HandlerUpdate() gin.HandlerFunc {
 			return
 		}
 
-		paciente, err := c.service.Update(ctx, request, idInt)
+		patient, err := c.service.Update(ctx, request, idInt)
 		if err != nil {
 			web.Error(ctx, http.StatusInternalServerError, "%s", "internal server error")
 			return
 		}
 
-		web.Success(ctx, http.StatusOK, gin.H{
-			"data": paciente,
-		})
+		web.Success(ctx, http.StatusOK, patient)
 
 	}
 }
 
-// Paciente godoc
-// @Summary paciente example
-// @Description Delete paciente by id
-// @Tags paciente
-// @Param id path int true "id del paciente"
+// Patient godoc
+// @Summary patient example
+// @Description Delete patient by id
+// @Tags patient
+// @Param id path int true "id del patient"
 // @Accept json
 // @Produce json
-// @Success 200 {object} web.response
+// @Success 200 {object} web.Response
 // @Failure 400 {object} web.errorResponse
 // @Failure 500 {object} web.errorResponse
-// @Router /pacientes/:id [delete]
-func (c *Controlador) HandlerDelete() gin.HandlerFunc {
+// @Router /patients/:id [delete]
+func (c *Controller) HandlerDelete() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		id, err := strconv.Atoi(ctx.Param("id"))
 		if err != nil {
-			web.Error(ctx, http.StatusBadRequest, "%s", "id invalido")
+			web.Error(ctx, http.StatusBadRequest, "%s", "invalid id")
 			return
 		}
 
@@ -179,31 +174,31 @@ func (c *Controlador) HandlerDelete() gin.HandlerFunc {
 		}
 
 		web.Success(ctx, http.StatusOK, gin.H{
-			"mensaje": "paciente eliminado",
+			"mensaje": "deleted patient",
 		})
 	}
 }
 
-// Paciente godoc
-// @Summary paciente example
-// @Description Patch paciente
-// @Tags paciente
-// @Param id path int true "id del paciente"
+// Patient godoc
+// @Summary patient example
+// @Description Patch patient
+// @Tags patient
+// @Param id path int true "id del patient"
 // @Accept json
 // @Produce json
-// @Success 200 {object} web.response
+// @Success 200 {object} web.Response
 // @Failure 400 {object} web.errorResponse
 // @Failure 500 {object} web.errorResponse
-// @Router /pacientes/:id [patch]
-func (c *Controlador) HandlerPatch() gin.HandlerFunc {
+// @Router /patients/:id [patch]
+func (c *Controller) HandlerPatch() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		id, err := strconv.Atoi(ctx.Param("id"))
 		if err != nil {
-			web.Error(ctx, http.StatusBadRequest, "%s", "id invalido")
+			web.Error(ctx, http.StatusBadRequest, "%s", "invalid id")
 			return
 		}
 
-		var request domain.Paciente
+		var request domain.Patient
 
 		errBind := ctx.Bind(&request)
 
@@ -212,14 +207,12 @@ func (c *Controlador) HandlerPatch() gin.HandlerFunc {
 			return
 		}
 
-		paciente, err := c.service.Patch(ctx, request, id)
+		patient, err := c.service.Patch(ctx, request, id)
 		if err != nil {
 			web.Error(ctx, http.StatusInternalServerError, "%s", "internal server error")
 			return
 		}
 
-		web.Success(ctx, http.StatusOK, gin.H{
-			"data": paciente,
-		})
+		web.Success(ctx, http.StatusOK, patient)
 	}
 }

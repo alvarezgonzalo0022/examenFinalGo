@@ -6,38 +6,25 @@ import (
 	"log"
 	"os"
 	routes "github.com/alvarezgonzalo0022/examenFinalGo/cmd/server/router"
+	_ "github.com/alvarezgonzalo0022/examenFinalGo/cmd/server/docs"
 	"github.com/alvarezgonzalo0022/examenFinalGo/pkg/middleware"
+	"github.com/alvarezgonzalo0022/examenFinalGo/pkg/store"
 	"github.com/gin-gonic/gin"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	_ "github.com/alvarezgonzalo0022/examenFinalGo/docs"
-	_ "github.com/go-sql-driver/mysql"
 )
 
 const (
 	puerto = "8080"
 )
 
-// @title           Swagger Example API
-// @version         1.0
-// @description     This is a sample server celler server.
-// @termsOfService  http://swagger.io/terms/
-
-// @contact.name   API Support
-// @contact.url    http://www.swagger.io/support
-// @contact.email  support@swagger.io
-
-// @license.name  Apache 2.0
-// @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
-
-// @host      localhost:8080
-// @BasePath  /api/v1
-
-// @securityDefinitions.basic  BasicAuth
-
-// @externalDocs.description  OpenAPI
-// @externalDocs.url          https://swagger.io/resources/open-api/
+// @title Dental Clinic Lisa Necesita Frenos
+// @version 1.0
+// @description This is a sample dental clinic API for managing appointments, dentists, and patients.
+// @host localhost:8080
+// @BasePath /api/v1
 func main() {
 
 	// Recover from panic.
@@ -55,7 +42,7 @@ func main() {
 	}
 
 	// Connect to the database.
-	db := connectDB()
+	db := store.ConnectDB()
 
 	// Create a new Gin engine.
 	router := gin.New()
@@ -83,33 +70,4 @@ func runApp(db *sql.DB, engine *gin.Engine) {
 		panic(err)
 	}
 
-}
-
-// connectDB connects to the database.
-func connectDB() *sql.DB {
-	var dbUsername, dbPassword, dbHost, dbPort, dbName string
-	dbUsername = os.Getenv("DB_USERNAME")
-	dbPassword = os.Getenv("DB_PASSWORD")
-	dbHost = "localhost"
-	dbPort = "3306"
-	dbName = "my_db"
-
-	// Create the data source.
-	dataSource := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", dbUsername, dbPassword, dbHost, dbPort, dbName)
-
-	// Open the connection.
-	db, err := sql.Open("mysql", dataSource)
-
-	if err != nil {
-		panic(err)
-	}
-
-	// Check the connection.
-	err = db.Ping()
-
-	if err != nil {
-		panic(err)
-	}
-
-	return db
 }
