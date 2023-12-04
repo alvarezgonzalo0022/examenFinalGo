@@ -7,12 +7,9 @@ import (
 	"log"
 	"strings"
 	"time"
-
 	"github.com/alvarezgonzalo0022/examenFinalGo/internal/dentists"
 	"github.com/alvarezgonzalo0022/examenFinalGo/internal/domain"
 	"github.com/alvarezgonzalo0022/examenFinalGo/internal/patients"
-	// "github.com/alvarezgonzalo0022/examenFinalGo/internal/appointments"
-	// "github.com/alvarezgonzalo0022/examenFinalGo/pkg/web"
 )
 
 var (
@@ -112,8 +109,6 @@ func (r *repositoryappointmentmysql) GetAll(ctx context.Context) ([]domain.Appoi
 
 func (r *repositoryappointmentmysql) GetByID(ctx context.Context, id int) (domain.AppointmentResponse, error) {
     row := r.db.QueryRow(QueryGetByIdAppointment, id)
-
-	
 	
 	var appointment domain.AppointmentResponse
     err := row.Scan(
@@ -134,12 +129,6 @@ func (r *repositoryappointmentmysql) GetByID(ctx context.Context, id int) (domai
         return domain.AppointmentResponse{}, err
     }
 
-	// appointmentDate, err := time.Parse("2006-01-02", appointment.AppointmentDate)
-    // if err != nil {
-    //     log.Println("Error parsing appointment date:", err)
-    //     return domain.AppointmentResponse{}, domain.ErrInvalidDateFormat
-    // }
-
 	appointment.AppointmentDate = strings.Split(appointment.AppointmentDate, "T")[0]
 
     return appointment, nil
@@ -153,13 +142,6 @@ func (r *repositoryappointmentmysql) Update(ctx context.Context, appointment dom
 	}
 
 	defer statement.Close()
-
-	// appointmentDate, err := time.Parse("2006-01-02", appointment.AppointmentDate)
-    // if err != nil {
-    //     log.Println("Error parsing appointment date:", err)
-    //     return domain.AppointmentRequest{}, domain.ErrInvalidDateFormat
-    // }
-	// appointmentDate = time.Date(appointmentDate.Year(), appointmentDate.Month(), appointmentDate.Day(), 0, 0, 0, 0, time.UTC)
 
 	appointment.AppointmentDate = strings.Split(appointment.AppointmentDate, "T")[0]
 
@@ -222,20 +204,10 @@ func (r *repositoryappointmentmysql) Patch(
 	}
 	defer statement.Close()
 
-	// var appointmentDate time.Time
 	if appointment.AppointmentDate != "" {
-	// appointmentDate, err := time.Parse("2006-01-02", appointment.AppointmentDate)
-	// if err != nil {
-	// 	log.Println("Error parsing appointment date:", err)
-	// 	return domain.AppointmentPatchRequest{}, domain.ErrInvalidDateFormat
-	// 	}
-		// appointmentDate = time.Date(appointmentDate.Year(), appointmentDate.Month(), appointmentDate.Day(), 0, 0, 0, 0, time.UTC)
 		appointment.AppointmentDate = strings.Split(appointment.AppointmentDate, "T")[0]
 	}
 	
-
-
-
 	result, err := statement.Exec(
 		appointment.DentistId,
 		appointment.PatientId,

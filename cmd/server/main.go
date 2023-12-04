@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-
 	routes "github.com/alvarezgonzalo0022/examenFinalGo/cmd/server/router"
 	_ "github.com/alvarezgonzalo0022/examenFinalGo/cmd/server/docs"
 	"github.com/alvarezgonzalo0022/examenFinalGo/pkg/middleware"

@@ -2,7 +2,6 @@ package routes
 
 import (
 	"database/sql"
-
 	handlerAppointment "github.com/alvarezgonzalo0022/examenFinalGo/cmd/server/handler/appointments"
 	handlerDentist "github.com/alvarezgonzalo0022/examenFinalGo/cmd/server/handler/dentists"
 	handlerPatient "github.com/alvarezgonzalo0022/examenFinalGo/cmd/server/handler/patients"
@@ -58,7 +57,7 @@ func (r *router) buildDentistRoutes() {
 	groupDentists := r.routerGroup.Group("/dentists")
 	{
 		groupDentists.POST("", middleware.Authenticate(), controller.HandlerCreate())
-		groupDentists.GET("", middleware.Authenticate(), controller.HandlerGetAll())
+		groupDentists.GET("", controller.HandlerGetAll())
 		groupDentists.GET("/:id", controller.HandlerGetByID())
 		groupDentists.PUT("/:id", middleware.Authenticate(), controller.HandlerUpdate())
 		groupDentists.DELETE("/:id", middleware.Authenticate(), controller.HandlerDelete())
@@ -77,7 +76,7 @@ func (r *router) buildPatientRoutes() {
 	groupPatients := r.routerGroup.Group("/patients")
 	{
 		groupPatients.POST("", middleware.Authenticate(), controller.HandlerCreate())
-		groupPatients.GET("", middleware.Authenticate(), controller.HandlerGetAll())
+		groupPatients.GET("", controller.HandlerGetAll())
 		groupPatients.GET("/:id", controller.HandlerGetByID())
 		groupPatients.PUT("/:id", middleware.Authenticate(), controller.HandlerUpdate())
 		groupPatients.DELETE("/:id", middleware.Authenticate(), controller.HandlerDelete())
@@ -98,7 +97,7 @@ func (r *router) buildAppointmentRoutes() {
 	groupAppointments := r.routerGroup.Group("/appointments")
 	{
 		groupAppointments.POST("", middleware.Authenticate(), appointmentController.HandlerCreate())
-		groupAppointments.GET("", middleware.Authenticate(), appointmentController.HandlerGetAll())
+		groupAppointments.GET("", appointmentController.HandlerGetAll())
 		groupAppointments.GET("/:id", appointmentController.HandlerGetByID())
 		groupAppointments.PUT("/:id", middleware.Authenticate(), appointmentController.HandlerUpdate())
 		groupAppointments.DELETE("/:id", middleware.Authenticate(), appointmentController.HandlerDelete())

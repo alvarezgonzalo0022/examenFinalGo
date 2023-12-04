@@ -4,7 +4,6 @@ import (
 	"log"
 	"net/http"
 	"strconv"
-
 	"github.com/alvarezgonzalo0022/examenFinalGo/internal/domain"
 	patients "github.com/alvarezgonzalo0022/examenFinalGo/internal/patients"
 	"github.com/alvarezgonzalo0022/examenFinalGo/pkg/web"

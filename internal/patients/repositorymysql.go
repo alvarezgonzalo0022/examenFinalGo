@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-
 	"github.com/alvarezgonzalo0022/examenFinalGo/internal/domain"
 )
 

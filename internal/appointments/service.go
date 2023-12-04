@@ -3,8 +3,6 @@ package appointments
 import (
 	"context"
 	"log"
-	// "time"
-
 	"github.com/alvarezgonzalo0022/examenFinalGo/internal/dentists"
 	"github.com/alvarezgonzalo0022/examenFinalGo/internal/domain"
 	"github.com/alvarezgonzalo0022/examenFinalGo/internal/patients"

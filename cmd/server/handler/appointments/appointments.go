@@ -4,14 +4,8 @@ import (
 	"log"
 	"net/http"
 	"strconv"
-
-	// "github.com/alvarezgonzalo0022/examenFinalGo/internal/domain"
 	"github.com/alvarezgonzalo0022/examenFinalGo/internal/appointments"
-	// "github.com/alvarezgonzalo0022/examenFinalGo/internal/dentists"
 	"github.com/alvarezgonzalo0022/examenFinalGo/internal/domain"
-	// "github.com/alvarezgonzalo0022/examenFinalGo/internal/patients"
-
-	// "github.com/alvarezgonzalo0022/examenFinalGo/internal/domain"
 	"github.com/alvarezgonzalo0022/examenFinalGo/pkg/web"
 	"github.com/gin-gonic/gin"
 )
